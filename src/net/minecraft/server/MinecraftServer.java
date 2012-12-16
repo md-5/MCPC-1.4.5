@@ -665,7 +665,7 @@ public abstract class MinecraftServer implements Runnable, IMojangStatistics, IC
     	if (options == null) // error or console help
     		return;
     	
-    	//cpw.mods.fml.relauncher.FMLLogFormatter.setFormat(options.has("nojline"), options.has("date-format") ? (SimpleDateFormat)options.valueOf("date-format") : null);
+    	cpw.mods.fml.relauncher.FMLLogFormatter.setFormat(options.has("nojline"), options.has("date-format") ? (SimpleDateFormat)options.valueOf("date-format") : null);
     	
     	StatisticList.a();
 

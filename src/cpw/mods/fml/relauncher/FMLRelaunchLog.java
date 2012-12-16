@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -16,6 +15,7 @@ import java.util.logging.Logger;
 
 public class FMLRelaunchLog
 {
+		public static boolean useOnlyThisLogger = false;
 
     private static class ConsoleLogWrapper extends Handler
     {
@@ -51,7 +51,7 @@ public class FMLRelaunchLog
     }
     private static class ConsoleLogThread implements Runnable
     {
-        static ConsoleHandler wrappedHandler = new ConsoleHandler();
+        static ConsoleHandler wrappedHandler = new FMLRelaunchLogConsoleHandler();
         static LinkedBlockingQueue<LogRecord> recordQueue = new LinkedBlockingQueue<LogRecord>();
         @Override
         public void run()
@@ -139,9 +139,14 @@ public class FMLRelaunchLog
         log.myLog = Logger.getLogger("ForgeModLoader");
 
         Logger stdOut = Logger.getLogger("STDOUT");
-        stdOut.setParent(log.myLog);
         Logger stdErr = Logger.getLogger("STDERR");
-        stdErr.setParent(log.myLog);
+
+        if (useOnlyThisLogger)
+        {
+        		stdOut.setParent(log.myLog);
+        		stdErr.setParent(log.myLog);
+        }
+        
         FMLLogFormatter formatter = new FMLLogFormatter();
 
         // Console handler captures the normal stderr before it gets replaced
@@ -167,8 +172,10 @@ public class FMLRelaunchLog
         // Set system out to a log stream
         errCache = System.err;
 
-        System.setOut(new PrintStream(new LoggingOutStream(stdOut), true));
-        System.setErr(new PrintStream(new LoggingOutStream(stdErr), true));
+        if(useOnlyThisLogger){
+		        System.setOut(new PrintStream(new LoggingOutStream(stdOut), true));
+		        System.setErr(new PrintStream(new LoggingOutStream(stdErr), true));
+        }
 
         // Reset global logging to shut up other logging sources (thanks guava!)
         configured = true;

@@ -146,11 +146,10 @@ public class Main
 
 				useJline = !jline_UnsupportedTerminal.equals(System.getProperty(jline_terminal));
 
-				//if (options.has("nojline")) {
-				// MCPC disable jline
-					System.setProperty("user.language", "en");
+				if (options.has("nojline")) {
+				  System.setProperty("user.language", "en");
 					useJline = false;
-				//}
+				}
 
 				if (!useJline)
 				{
