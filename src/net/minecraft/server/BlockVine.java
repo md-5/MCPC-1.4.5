@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+import java.util.ArrayList;
 import java.util.Random;
 import net.minecraft.server.AxisAlignedBB;
 import net.minecraft.server.Block;
@@ -14,7 +15,9 @@ import net.minecraft.server.StatisticList;
 import net.minecraft.server.World;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 
-public class BlockVine extends Block {
+import net.minecraftforge.common.IShearable;
+
+public class BlockVine extends Block implements IShearable { // Forge
 
    public BlockVine(int i) {
       super(i, 143, Material.REPLACEABLE_PLANT);
@@ -291,19 +294,28 @@ public class BlockVine extends Block {
    }
 
    public void a(World world, EntityHuman entityhuman, int i, int j, int k, int l) {
-      if(!world.isStatic && entityhuman.bT() != null && entityhuman.bT().id == Item.SHEARS.id) {
-         entityhuman.a(StatisticList.C[this.id], 1);
-         this.b(world, i, j, k, new ItemStack(Block.VINE, 1, 0));
-      } else {
-         super.a(world, entityhuman, i, j, k, l);
-      }
-
+	   super.a(world, entityhuman, i, j, k, l); // Forge
    }
    
-   // Forge Hook
+   // Forge start
    @Override
-   public boolean isLadder(World var1, int var2, int var3, int var4)
+   public boolean isShearable(ItemStack item, World world, int x, int y, int z) 
    {
-       return true;
+	   return true;
    }
+       
+   @Override
+   public ArrayList<ItemStack> onSheared(ItemStack item, World world, int x, int y, int z, int fortune) 
+   {
+	   ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+       ret.add(new ItemStack(this, 1, 0));
+       return ret;
+   }
+       
+   @Override
+   public boolean isLadder(World world, int x, int y, int z) 
+   {
+      return true;
+   }
+   // Forge end
 }

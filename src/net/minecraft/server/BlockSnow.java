@@ -38,8 +38,10 @@ public class BlockSnow extends Block {
     public boolean canPlace(World var1, int var2, int var3, int var4)
     {
         int var5 = var1.getTypeId(var2, var3 - 1, var4);
+        // Forge start
         Block var6 = Block.byId[var5];
         return var6 != null && (var6.isLeaves(var1, var2, var3 - 1, var4) || Block.byId[var5].c()) ? var1.getMaterial(var2, var3 - 1, var4).isSolid() : false;
+        // Forge end
     }
 
     public void doPhysics(World world, int i, int j, int k, int l) {
@@ -58,11 +60,8 @@ public class BlockSnow extends Block {
     }
 
     public void a(World world, EntityHuman entityhuman, int i, int j, int k, int l) {
-        int i1 = Item.SNOW_BALL.id;
-
-        this.b(world, i, j, k, new ItemStack(i1, 1, 0));
+        super.a(world, entityhuman, i, j, k, l); // Forge
         world.setTypeId(i, j, k, 0);
-        entityhuman.a(StatisticList.C[this.id], 1);
     }
 
     public int getDropType(int i, Random random, int j) {
@@ -70,7 +69,7 @@ public class BlockSnow extends Block {
     }
 
     public int a(Random random) {
-        return 0;
+        return 1; // Forge
     }
 
     public void b(World world, int i, int j, int k, Random random) {

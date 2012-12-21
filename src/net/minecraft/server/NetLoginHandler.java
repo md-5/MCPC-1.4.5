@@ -50,7 +50,7 @@ public class NetLoginHandler extends NetHandler {
             this.d();
         }
 
-        if (this.g++ == 600) {
+        if (this.g++ == 6000) {
             this.disconnect("Took too long to log in");
         } else {
             this.networkManager.b();
@@ -123,7 +123,7 @@ public class NetLoginHandler extends NetHandler {
 
     public void a(Packet1Login var1)
     {
-        FMLNetworkHandler.handleLoginPacketOnServer(this, var1);
+        FMLNetworkHandler.handleLoginPacketOnServer(this, var1); // Forge
     }
 
     /**
@@ -131,7 +131,7 @@ public class NetLoginHandler extends NetHandler {
      */
     public void d()
     {
-        FMLNetworkHandler.onConnectionReceivedFromClient(this, this.server, this.networkManager.getSocketAddress(), this.h);
+        FMLNetworkHandler.onConnectionReceivedFromClient(this, this.server, this.networkManager.getSocketAddress(), this.h); // Forge
     }
     
     public void completeConnection(String str) {
@@ -235,6 +235,7 @@ public class NetLoginHandler extends NetHandler {
         return netloginhandler.h;
     }
 
+    // Forge start
     public static boolean a(NetLoginHandler netloginhandler, boolean flag) {
         return netloginhandler.i = flag;
     }
@@ -250,4 +251,5 @@ public class NetLoginHandler extends NetHandler {
     {
         return null;
     }
+    // Forge end
 }

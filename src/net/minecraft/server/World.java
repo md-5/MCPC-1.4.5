@@ -248,7 +248,7 @@ public abstract class World implements IBlockAccess {
 
 		return this.getTypeId(i, k, j);
 	}
-	
+
 	// CPCM start - renamed to BlockChangeDelegate implement during CPCM reobf
     public int getTypeId_API_CB(int var1, int var2, int var3) {
         return this.getTypeId(var1, var2, var3);
@@ -1011,7 +1011,7 @@ public abstract class World implements IBlockAccess {
                         if (e instanceof EntityItem) {
                             EntityItem loopItem = (EntityItem) e;
                             if (!loopItem.dead && loopItem.itemStack.id == item.itemStack.id && loopItem.itemStack.getData() == item.itemStack.getData()) {
-                                if ((loopItem.itemStack.tag == null && item.itemStack.tag == null) || !loopItem.itemStack.tag.equals(loopItem.itemStack.tag)) {
+                                if (loopItem.itemStack.tag == null || item.itemStack.tag == null || !loopItem.itemStack.tag.equals(loopItem.itemStack.tag)) {
                                     int toAdd = Math.min(loopItem.itemStack.count, maxSize - item.itemStack.count);
                                     item.itemStack.count += toAdd;
                                     loopItem.itemStack.count -= toAdd;
@@ -1458,6 +1458,8 @@ public abstract class World implements IBlockAccess {
 			this.tileEntityList.removeAll(this.b);
 			this.b.clear();
 		}
+		
+		this.N = false; // Forge
 
 		this.methodProfiler.c("pendingTileEntities");
 		if (!this.a.isEmpty()) {

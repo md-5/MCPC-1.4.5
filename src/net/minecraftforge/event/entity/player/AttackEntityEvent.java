@@ -9,9 +9,9 @@ public class AttackEntityEvent extends PlayerEvent
 {
     public final Entity target;
 
-    public AttackEntityEvent(EntityHuman var1, Entity var2)
+    public AttackEntityEvent(EntityHuman player, Entity target)
     {
-        super(var1);
-        this.target = var2;
+        super(player);
+        this.target = target;
     }
 }

@@ -3,27 +3,31 @@ package cpw.mods.fml.common.network;
 import static cpw.mods.fml.common.network.FMLPacket.Type.MOD_IDENTIFIERS;
 import static cpw.mods.fml.common.network.FMLPacket.Type.MOD_LIST_RESPONSE;
 import static cpw.mods.fml.common.network.FMLPacket.Type.MOD_MISSING;
+import static cpw.mods.fml.common.network.FMLPacket.Type.MOD_IDMAP;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import net.minecraft.server.NBTTagList;
 import net.minecraft.server.NetHandler;
 import net.minecraft.server.NetLoginHandler;
 import net.minecraft.server.INetworkManager;
 import net.minecraft.server.Packet1Login;
 import net.minecraft.server.Packet250CustomPayload;
 
-
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 import mcpc.com.google.common.collect.Lists;
 import mcpc.com.google.common.collect.Maps;
 import mcpc.com.google.common.io.ByteArrayDataInput;
 import mcpc.com.google.common.io.ByteArrayDataOutput;
 import mcpc.com.google.common.io.ByteStreams;
+
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModListResponsePacket extends FMLPacket
 {
@@ -114,16 +118,25 @@ public class ModListResponsePacket extends FMLPacket
             FMLLog.info("User %s connection failed: missing %s, bad versions %s", userName, missingClientMods, versionIncorrectMods);
             // Mark this as bad
            	FMLNetworkHandler.setHandlerState((NetLoginHandler) netHandler, FMLNetworkHandler.MISSING_MODS_OR_VERSIONS);
+            pkt.length = pkt.data.length;
+            network.queue(pkt);
         }
         else
         {
             pkt.data = FMLPacket.makePacket(MOD_IDENTIFIERS, netHandler);
             Logger.getLogger("Minecraft").info(String.format("User %s connecting with mods %s", userName, modVersions.keySet()));
             FMLLog.info("User %s connecting with mods %s", userName, modVersions.keySet());
+            pkt.length = pkt.data.length;
+            network.queue(pkt);
+            NBTTagList itemList = new NBTTagList();
+            GameData.writeItemData(itemList);
+            byte[][] registryPackets = FMLPacket.makePacketSet(MOD_IDMAP, itemList);
+            for (int i = 0; i < registryPackets.length; i++)
+            {
+                network.queue(PacketDispatcher.getPacket("FML", registryPackets[i]));
+            }
         }
        
-        pkt.length = pkt.data.length;
-        network.queue(pkt);
         // reset the continuation flag - we have completed extra negotiation and the login should complete now
        	NetLoginHandler.a((NetLoginHandler) netHandler, true);
     }

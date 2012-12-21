@@ -394,10 +394,10 @@ public class EntityTrackerEntry {
             // CraftBukkit end
         }
         
-        Packet var1 = FMLNetworkHandler.getEntitySpawningPacket(this.tracker);
-        if (var1 != null)
+        Packet pkt = FMLNetworkHandler.getEntitySpawningPacket(this.tracker);
+        if (pkt != null)
         {
-        	return var1;
+        	return pkt;
         }
         else if (this.tracker instanceof EntityItem) {
             EntityItem entityitem = (EntityItem) this.tracker;

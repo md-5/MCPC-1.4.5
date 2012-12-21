@@ -1,6 +1,7 @@
 package net.minecraft.server;
 
 import net.minecraftforge.common.ForgeDirection;
+import static net.minecraftforge.common.ForgeDirection.*;
 import java.util.Random;
 
 // CraftBukkit start
@@ -20,9 +21,10 @@ public class BlockFire extends Block {
     }
 
     public void t_() {
+    	// Forge start
         this.b = Block.blockFlammability;
         this.a = Block.blockFireSpreadSpeed;
-        
+        // Forge end
         this.a(Block.WOOD.id, 5, 20);
         this.a(Block.WOOD_DOUBLE_STEP.id, 5, 20);
         this.a(Block.WOOD_STEP.id, 5, 20);
@@ -47,7 +49,7 @@ public class BlockFire extends Block {
      */
     private void a(int var1, int var2, int var3)
     {
-        Block.setBurnProperties(var1, var2, var3);
+        Block.setBurnProperties(var1, var2, var3); // Forge
     }
 
     public AxisAlignedBB e(World world, int i, int j, int k) {
@@ -77,9 +79,10 @@ public class BlockFire extends Block {
     public void b(World world, int i, int j, int k, Random random) {
         if (world.getGameRules().getBoolean("doFireTick")) {
         	
-            Block var6 = Block.byId[world.getTypeId(i, j - 1, k)];
-            boolean flag = var6 != null && var6.isFireSource(world, i, j - 1, k, world.getData(i, j - 1, k), ForgeDirection.UP);
-
+        	// Forge start
+            Block base = Block.byId[world.getTypeId(i, j - 1, k)];
+            boolean flag = base != null && base.isFireSource(world, i, j - 1, k, world.getData(i, j - 1, k), UP);
+            // Forge end
             if (world.worldProvider instanceof WorldProviderTheEnd && world.getTypeId(i, j - 1, k) == Block.BEDROCK.id) {
                 flag = true;
             }
@@ -102,7 +105,7 @@ public class BlockFire extends Block {
                     if (!world.v(i, j - 1, k) || l > 3) {
                         world.setTypeId(i, j, k, 0);
                     }
-                } else if (!flag && !this.canBlockCatchFire((IBlockAccess) world, i, j - 1, k, ForgeDirection.UP) && l == 15 && random.nextInt(4) == 0) {
+                } else if (!flag && !this.canBlockCatchFire((IBlockAccess) world, i, j - 1, k, UP) && l == 15 && random.nextInt(4) == 0) { // Forge
                     fireExtinguished(world, i, j, k); // CraftBukkit - burn out
                 } else {
                     boolean flag1 = world.E(i, j, k);
@@ -112,13 +115,14 @@ public class BlockFire extends Block {
                         b0 = -50;
                     }
 
-                    this.tryToCatchBlockOnFire(world, i + 1, j, k, 300 + b0, random, l, ForgeDirection.WEST);
-                    this.tryToCatchBlockOnFire(world, i - 1, j, k, 300 + b0, random, l, ForgeDirection.EAST);
-                    this.tryToCatchBlockOnFire(world, i, j - 1, k, 250 + b0, random, l, ForgeDirection.UP);
-                    this.tryToCatchBlockOnFire(world, i, j + 1, k, 250 + b0, random, l, ForgeDirection.DOWN);
-                    this.tryToCatchBlockOnFire(world, i, j, k - 1, 300 + b0, random, l, ForgeDirection.SOUTH);
-                    this.tryToCatchBlockOnFire(world, i, j, k + 1, 300 + b0, random, l, ForgeDirection.NORTH);
-
+                    // Forge start
+                    this.tryToCatchBlockOnFire(world, i + 1, j, k, 300 + b0, random, l, WEST);
+                    this.tryToCatchBlockOnFire(world, i - 1, j, k, 300 + b0, random, l, EAST);
+                    this.tryToCatchBlockOnFire(world, i, j - 1, k, 250 + b0, random, l, UP);
+                    this.tryToCatchBlockOnFire(world, i, j + 1, k, 250 + b0, random, l, DOWN);
+                    this.tryToCatchBlockOnFire(world, i, j, k - 1, 300 + b0, random, l, SOUTH);
+                    this.tryToCatchBlockOnFire(world, i, j, k + 1, 300 + b0, random, l, NORTH);
+                    // Forge end
                     // CraftBukkit start - call to stop spread of fire
                     org.bukkit.Server server = world.getServer();
                     org.bukkit.World bworld = world.getWorld();
@@ -195,9 +199,9 @@ public class BlockFire extends Block {
     @Deprecated
     private void a(World var1, int var2, int var3, int var4, int var5, Random var6, int var7)
     {
-        this.tryToCatchBlockOnFire(var1, var2, var3, var4, var5, var6, var7, ForgeDirection.UP);
+        this.tryToCatchBlockOnFire(var1, var2, var3, var4, var5, var6, var7, ForgeDirection.UP); // Forge
     }
-
+    // Forge start
     private void tryToCatchBlockOnFire(World world, int var2, int var3, int var4, int var5, Random random, int var7, ForgeDirection var8)
     {
         int var9 = 0;
@@ -207,7 +211,7 @@ public class BlockFire extends Block {
         {
             var9 = var10.getFlammability(world, var2, var3, var4, world.getData(var2, var3, var4), var8);
         }
-
+        // Forge end
         if (random.nextInt(var5) < var9)
         {
             boolean var11 = world.getTypeId(var2, var3, var4) == Block.TNT.id;
@@ -251,30 +255,37 @@ public class BlockFire extends Block {
      */
     private boolean l(World var1, int var2, int var3, int var4)
     {
-        return this.canBlockCatchFire(var1, var2 + 1, var3, var4, ForgeDirection.WEST) || this.canBlockCatchFire(var1, var2 - 1, var3, var4, ForgeDirection.EAST) || this.canBlockCatchFire(var1, var2, var3 - 1, var4, ForgeDirection.UP) || this.canBlockCatchFire(var1, var2, var3 + 1, var4, ForgeDirection.DOWN) || this.canBlockCatchFire(var1, var2, var3, var4 - 1, ForgeDirection.SOUTH) || this.canBlockCatchFire(var1, var2, var3, var4 + 1, ForgeDirection.NORTH);
+        return canBlockCatchFire(var1, var2 + 1, var3, var4, WEST) ||
+        	   canBlockCatchFire(var1, var2 - 1, var3, var4, EAST) || 
+        	   canBlockCatchFire(var1, var2, var3 - 1, var4, UP)   || 
+        	   canBlockCatchFire(var1, var2, var3 + 1, var4, DOWN) || 
+        	   canBlockCatchFire(var1, var2, var3, var4 - 1, SOUTH)|| 
+        	   canBlockCatchFire(var1, var2, var3, var4 + 1, NORTH);
     }
 
 
     /**
      * Gets the highest chance of a neighbor block encouraging this block to catch fire
      */
-    private int n(World var1, int var2, int var3, int var4)
+    private int n(World world, int var2, int var3, int var4)
     {
         byte var5 = 0;
 
-        if (!var1.isEmpty(var2, var3, var4))
+        if (!world.isEmpty(var2, var3, var4))
         {
             return 0;
         }
         else
         {
-            int var6 = this.getChanceToEncourageFire(var1, var2 + 1, var3, var4, var5, ForgeDirection.WEST);
-            var6 = this.getChanceToEncourageFire(var1, var2 - 1, var3, var4, var6, ForgeDirection.EAST);
-            var6 = this.getChanceToEncourageFire(var1, var2, var3 - 1, var4, var6, ForgeDirection.UP);
-            var6 = this.getChanceToEncourageFire(var1, var2, var3 + 1, var4, var6, ForgeDirection.DOWN);
-            var6 = this.getChanceToEncourageFire(var1, var2, var3, var4 - 1, var6, ForgeDirection.SOUTH);
-            var6 = this.getChanceToEncourageFire(var1, var2, var3, var4 + 1, var6, ForgeDirection.NORTH);
-            return var6;
+        	// Forge start
+            int var6 = this.getChanceToEncourageFire(world, var2 + 1, var3, var4, var5, WEST);
+            	var6 = this.getChanceToEncourageFire(world, var2 - 1, var3, var4, var6, EAST);
+            	var6 = this.getChanceToEncourageFire(world, var2, var3 - 1, var4, var6, UP);
+            	var6 = this.getChanceToEncourageFire(world, var2, var3 + 1, var4, var6, DOWN);
+            	var6 = this.getChanceToEncourageFire(world, var2, var3, var4 - 1, var6, SOUTH);
+            	var6 = this.getChanceToEncourageFire(world, var2, var3, var4 + 1, var6, NORTH);
+            	return var6;
+            // Forge end
         }
     }
 
@@ -286,28 +297,30 @@ public class BlockFire extends Block {
         return false;
     }
 
-    @Deprecated
-
+    // Forge start
     /**
      * Checks the specified block coordinate to see if it can catch fire.  Args: blockAccess, x, y, z
+     * Deprecated for a side-sensitive version
      */
+    @Deprecated
     public boolean d(IBlockAccess var1, int var2, int var3, int var4)
     {
-        return this.canBlockCatchFire(var1, var2, var3, var4, ForgeDirection.UP);
+        return canBlockCatchFire(var1, var2, var3, var4, UP);
     }
-
-    @Deprecated
 
     /**
      * Retrieves a specified block's chance to encourage their neighbors to burn and if the number is greater than the
      * current number passed in it will return its number instead of the passed in one.  Args: world, x, y, z,
      * curChanceToEncourageFire
+     * Deprecated for a side-sensitive version
      */
+    @Deprecated
     public int d(World var1, int var2, int var3, int var4, int var5)
     {
-        return this.getChanceToEncourageFire(var1, var2, var3, var4, var5, ForgeDirection.UP);
+        return this.getChanceToEncourageFire(var1, var2, var3, var4, var5, UP);
     }
-
+    // Forge end
+    
     public boolean canPlace(World world, int i, int j, int k) {
         return world.v(i, j - 1, k) || this.l(world, i, j, k);
     }
@@ -336,23 +349,43 @@ public class BlockFire extends Block {
     }
     // CraftBukkit end
     
-
-    public boolean canBlockCatchFire(IBlockAccess var1, int var2, int var3, int var4, ForgeDirection var5)
+    /**
+     * Side sensitive version that calls the block function.
+     * 
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @param face The side the fire is coming from
+     * @return True if the face can catch fire.
+     */
+    public boolean canBlockCatchFire(IBlockAccess world, int x, int y, int z, ForgeDirection face)
     {
-        Block var6 = Block.byId[var1.getTypeId(var2, var3, var4)];
-        return var6 != null ? var6.isFlammable(var1, var2, var3, var4, var1.getData(var2, var3, var4), var5) : false;
+        Block var6 = Block.byId[world.getTypeId(x, y, z)];
+        return var6 != null ? var6.isFlammable(world, x, y, z, world.getData(x, y, z), face) : false;
     }
 
-    public int getChanceToEncourageFire(World var1, int var2, int var3, int var4, int var5, ForgeDirection var6)
+    /**
+     * Side sensitive version that calls the block function.
+     * 
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @param oldChance The previous maximum chance.
+     * @param face The side the fire is coming from
+     * @return The chance of the block catching fire, or oldChance if it is higher
+     */
+    public int getChanceToEncourageFire(World world, int x, int y, int z, int oldChance, ForgeDirection face)
     {
         int var7 = 0;
-        Block var8 = Block.byId[var1.getTypeId(var2, var3, var4)];
+        Block var8 = Block.byId[world.getTypeId(x, y, z)];
 
         if (var8 != null)
         {
-            var7 = var8.getFireSpreadSpeed(var1, var2, var3, var4, var1.getData(var2, var3, var4), var6);
+            var7 = var8.getFireSpreadSpeed(world, x, y, z, world.getData(x, y, z), face);
         }
 
-        return var7 > var5 ? var7 : var5;
+        return var7 > oldChance ? var7 : oldChance;
     }
 }

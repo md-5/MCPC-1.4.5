@@ -15,14 +15,6 @@ import net.minecraft.server.EntityTracker;
 import net.minecraft.server.EnumCreatureType;
 import net.minecraft.server.BiomeMeta;
 
-//import mcpc.com.google.common.primitives.UnsignedInteger;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.network.EntitySpawnPacket;
-import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
 import mcpc.com.google.common.base.Function;
 import mcpc.com.google.common.collect.ArrayListMultimap;
 import mcpc.com.google.common.collect.BiMap;
@@ -30,6 +22,13 @@ import mcpc.com.google.common.collect.HashBiMap;
 import mcpc.com.google.common.collect.ListMultimap;
 import mcpc.com.google.common.collect.Maps;
 import mcpc.com.google.common.primitives.UnsignedBytes;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.network.EntitySpawnPacket;
+import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
 
 public class EntityRegistry
 {

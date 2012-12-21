@@ -32,6 +32,7 @@ public class ItemBucket extends Item {
         if (movingobjectposition == null) {
             return itemstack;
         } else {
+        	// Forge start
         	FillBucketEvent var13 = new FillBucketEvent(entityhuman, itemstack, world, movingobjectposition);
 
             if (MinecraftForge.EVENT_BUS.post(var13))
@@ -56,8 +57,9 @@ public class ItemBucket extends Item {
                     }
 
                     return itemstack;
-                }
+                }               
             }
+            // Forge end
             else
             {
 	            if (movingobjectposition.type == EnumMovingObjectType.TILE) {

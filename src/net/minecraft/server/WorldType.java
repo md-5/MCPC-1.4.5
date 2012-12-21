@@ -11,9 +11,11 @@ import java.util.Random;
 
 public class WorldType
 {
+	// Forge start
     public static final BiomeBase[] base11Biomes = new BiomeBase[] {BiomeBase.DESERT, BiomeBase.FOREST, BiomeBase.EXTREME_HILLS, BiomeBase.SWAMPLAND, BiomeBase.PLAINS, BiomeBase.TAIGA};
     public static final BiomeBase[] base12Biomes = (BiomeBase[])ObjectArrays.concat(base11Biomes, BiomeBase.JUNGLE);
-
+    // Forge end
+    
     /** List of world types. */
     public static final WorldType[] types = new WorldType[16];
 
@@ -43,7 +45,7 @@ public class WorldType
 
     /** Whether this WorldType has a version or not. */
     private boolean j;
-    protected BiomeBase[] biomesForWorldType;
+    protected BiomeBase[] biomesForWorldType; // Forge
 
     public WorldType(int var1, String var2)
     {
@@ -57,7 +59,7 @@ public class WorldType
         this.i = true;
         this.f = var1;
         types[var1] = this;
-
+        // Forge start
         switch (var1)
         {
             case 8:
@@ -67,6 +69,7 @@ public class WorldType
             default:
                 this.biomesForWorldType = base12Biomes;
         }
+        // Forge end
     }
 
     public String name()
@@ -131,6 +134,7 @@ public class WorldType
         return null;
     }
 
+    // Forge start
     public WorldChunkManager getChunkManager(World var1)
     {
         if (this == FLAT)
@@ -192,6 +196,7 @@ public class WorldType
     {
         return this == FLAT ? var1.nextInt(4) != 1 : false;
     }
+    // Forge end
 
     public void onGUICreateWorldPress() {}
 

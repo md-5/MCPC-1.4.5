@@ -45,7 +45,7 @@ public class DedicatedServerConnectionThread extends Thread {
                     netloginhandler.c();
                 } catch (Exception exception) {
                     netloginhandler.disconnect("Internal server error");
-                    FMLLog.log(Level.SEVERE, exception, "Error handling login related packet - connection from %s refused", new Object[] {netloginhandler.h});
+                    FMLLog.log(Level.SEVERE, exception, "Error handling login related packet - connection from %s refused", new Object[] {netloginhandler.h}); // Forge
                     a.log(Level.WARNING, "Failed to handle packet for " + netloginhandler.getName() + ": " + exception, exception);
                 }
 

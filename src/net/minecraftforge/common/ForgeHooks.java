@@ -145,11 +145,13 @@ public class ForgeHooks
             MinecraftForge.setToolClass(Item.IRON_PICKAXE, "pickaxe", 2);
             MinecraftForge.setToolClass(Item.GOLD_PICKAXE, "pickaxe", 0);
             MinecraftForge.setToolClass(Item.DIAMOND_PICKAXE, "pickaxe", 3);
+            
             MinecraftForge.setToolClass(Item.WOOD_AXE, "axe", 0);
             MinecraftForge.setToolClass(Item.STONE_AXE, "axe", 1);
             MinecraftForge.setToolClass(Item.IRON_AXE, "axe", 2);
             MinecraftForge.setToolClass(Item.GOLD_AXE, "axe", 0);
             MinecraftForge.setToolClass(Item.DIAMOND_AXE, "axe", 3);
+            
             MinecraftForge.setToolClass(Item.WOOD_SPADE, "shovel", 0);
             MinecraftForge.setToolClass(Item.STONE_SPADE, "shovel", 1);
             MinecraftForge.setToolClass(Item.IRON_SPADE, "shovel", 2);

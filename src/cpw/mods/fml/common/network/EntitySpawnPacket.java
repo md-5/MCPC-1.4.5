@@ -15,6 +15,9 @@ import net.minecraft.server.MathHelper;
 import net.minecraft.server.NetHandler;
 import net.minecraft.server.INetworkManager;
 
+import mcpc.com.google.common.io.ByteArrayDataInput;
+import mcpc.com.google.common.io.ByteArrayDataOutput;
+import mcpc.com.google.common.io.ByteStreams;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -23,9 +26,6 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.common.registry.IThrowableEntity;
-import mcpc.com.google.common.io.ByteArrayDataInput;
-import mcpc.com.google.common.io.ByteArrayDataOutput;
-import mcpc.com.google.common.io.ByteStreams;
 
 public class EntitySpawnPacket extends FMLPacket
 {
@@ -140,9 +140,7 @@ public class EntitySpawnPacket extends FMLPacket
         scaledHeadYaw = dat.readByte() * 360F / 256F;
         ByteArrayInputStream bis = new ByteArrayInputStream(data, 27, data.length - 27);
         DataInputStream dis = new DataInputStream(bis);
-
         metadata = DataWatcher.a(dis);
-
         dat.skipBytes(data.length - bis.available() - 27);
         throwerId = dat.readInt();
         if (throwerId != 0)

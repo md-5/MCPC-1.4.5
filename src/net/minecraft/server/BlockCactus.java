@@ -92,7 +92,7 @@ public class BlockCactus extends Block implements IPlantable {
         else
         {
             int var5 = var1.getTypeId(var2, var3 - 1, var4);
-            return byId[var5] != null && byId[var5].canSustainPlant(var1, var2, var3 - 1, var4, ForgeDirection.UP, this);
+            return byId[var5] != null && byId[var5].canSustainPlant(var1, var2, var3 - 1, var4, ForgeDirection.UP, this); // Forge
         }
     }
 
@@ -116,7 +116,7 @@ public class BlockCactus extends Block implements IPlantable {
         entity.damageEntity(DamageSource.CACTUS, 1);
     }
     
-
+    // Forge start
     public EnumPlantType getPlantType(World var1, int var2, int var3, int var4)
     {
         return EnumPlantType.Desert;
@@ -131,4 +131,5 @@ public class BlockCactus extends Block implements IPlantable {
     {
         return -1;
     }
+    // Forge end
 }

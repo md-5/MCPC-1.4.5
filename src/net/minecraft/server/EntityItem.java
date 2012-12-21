@@ -16,7 +16,10 @@ public class EntityItem extends Entity {
     private int e = 5;
     public float d = (float) (Math.random() * 3.141592653589793D * 2.0D);
     private int lastTick = (int) (System.currentTimeMillis() / 50); // CraftBukkit
-    public int lifespan = 6000;
+    /**
+     * The maximum age of this EntityItem.  The item is expired once this is reached.
+     */
+    public int lifespan = 6000; // Forge
 
     public EntityItem(World world, double d0, double d1, double d2, ItemStack itemstack) {
         super(world);
@@ -38,7 +41,7 @@ public class EntityItem extends Entity {
         this.motX = (double) ((float) (Math.random() * 0.20000000298023224D - 0.10000000149011612D));
         this.motY = 0.20000000298023224D;
         this.motZ = (double) ((float) (Math.random() * 0.20000000298023224D - 0.10000000149011612D));
-        this.lifespan = itemstack.getItem() == null ? 6000 : itemstack.getItem().getEntityLifespan(itemstack, world);
+        this.lifespan = itemstack.getItem() == null ? 6000 : itemstack.getItem().getEntityLifespan(itemstack, world); // Forge
     }
 
     protected boolean f_() {
@@ -102,13 +105,14 @@ public class EntityItem extends Entity {
         }
         } // Spigot
         ++this.age;
+        // Forge start
         if (!this.world.isStatic && this.age >= this.lifespan) {
         	
-            ItemExpireEvent var6 = new ItemExpireEvent(this, this.itemStack.getItem() == null ? 6000 : this.itemStack.getItem().getEntityLifespan(this.itemStack, this.world));
+            ItemExpireEvent event = new ItemExpireEvent(this, this.itemStack.getItem() == null ? 6000 : this.itemStack.getItem().getEntityLifespan(this.itemStack, this.world));
 
-            if (MinecraftForge.EVENT_BUS.post(var6))
+            if (MinecraftForge.EVENT_BUS.post(event))
             {
-                this.lifespan += var6.extraLife;
+                this.lifespan += event.extraLife;
             }
             else
             {
@@ -120,6 +124,7 @@ public class EntityItem extends Entity {
 	            	this.die();
 	         // CraftBukkit end
             }
+            // Forge end
         }
         
         if (this.itemStack == null || this.itemStack.count <= 0)
@@ -197,7 +202,7 @@ public class EntityItem extends Entity {
     public void b(NBTTagCompound nbttagcompound) {
         nbttagcompound.setShort("Health", (short) ((byte) this.e));
         nbttagcompound.setShort("Age", (short) this.age);
-        nbttagcompound.setInt("Lifespan", this.lifespan);
+        nbttagcompound.setInt("Lifespan", this.lifespan); // Forge
         if (this.itemStack != null) {
             nbttagcompound.setCompound("Item", this.itemStack.save(new NBTTagCompound()));
         }
@@ -206,25 +211,30 @@ public class EntityItem extends Entity {
     public void a(NBTTagCompound nbttagcompound) {
         this.e = nbttagcompound.getShort("Health") & 255;
         this.age = nbttagcompound.getShort("Age");
-        if (nbttagcompound.hasKey("Lifespan"))
-        	 this.lifespan = nbttagcompound.getInt("Lifespan");
         
         NBTTagCompound nbttagcompound1 = nbttagcompound.getCompound("Item");
         this.itemStack = ItemStack.a(nbttagcompound1);
-        if (this.itemStack == null || this.itemStack.count <= 0) {
+        if (this.itemStack == null || this.itemStack.count <= 0) { // Forge start
             this.die();
         }
+        if (nbttagcompound1.hasKey("Lifespan"))
+        {
+        	lifespan = nbttagcompound1.getInt("Lifespan");
+        }
+        // Forge end
     }
 
     public void c_(EntityHuman entityhuman) {
         if ((!this.world.isStatic) && (this.itemStack != null)) // CraftBukkit - nullcheck
         { 
+        	// Forge start
             if (this.pickupDelay > 0)
                 return;
             
             EntityItemPickupEvent var2 = new EntityItemPickupEvent(entityhuman, this);
             if (MinecraftForge.EVENT_BUS.post(var2))
                 return;
+            // Forge end
 
             int i = this.itemStack.count;
 
@@ -247,7 +257,7 @@ public class EntityItem extends Entity {
             }
             // CraftBukkit end
 
-            if (this.pickupDelay <= 0 && (var2.getResult() == Result.ALLOW || i <= 0 || entityhuman.inventory.pickup(this.itemStack))) {
+            if (this.pickupDelay <= 0 && (var2.getResult() == Result.ALLOW || i <= 0 || entityhuman.inventory.pickup(this.itemStack))) { // Forge
                 if (this.itemStack.id == Block.LOG.id) {
                     entityhuman.a((Statistic) AchievementList.g);
                 }

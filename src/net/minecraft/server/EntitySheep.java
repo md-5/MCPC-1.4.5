@@ -30,7 +30,9 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.event.entity.SheepRegrowWoolEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 
-public class EntitySheep extends EntityAnimal {
+import net.minecraftforge.common.IShearable;
+
+public class EntitySheep extends EntityAnimal implements IShearable { // Forge
 
    private final InventoryCrafting e = new InventoryCrafting(new ContainerSheepBreed(this), 2, 1);
    public static final float[][] d = new float[][]{{1.0F, 1.0F, 1.0F}, {0.85F, 0.5F, 0.2F}, {0.7F, 0.3F, 0.85F}, {0.4F, 0.6F, 0.85F}, {0.9F, 0.9F, 0.2F}, {0.5F, 0.8F, 0.1F}, {0.95F, 0.5F, 0.65F}, {0.3F, 0.3F, 0.3F}, {0.6F, 0.6F, 0.6F}, {0.3F, 0.5F, 0.6F}, {0.5F, 0.25F, 0.7F}, {0.2F, 0.3F, 0.7F}, {0.4F, 0.3F, 0.2F}, {0.4F, 0.5F, 0.2F}, {0.6F, 0.2F, 0.2F}, {0.1F, 0.1F, 0.1F}};
@@ -98,31 +100,7 @@ public class EntitySheep extends EntityAnimal {
    }
 
    public boolean a(EntityHuman entityhuman) {
-      ItemStack itemstack = entityhuman.inventory.getItemInHand();
-      if(itemstack != null && itemstack.id == Item.SHEARS.id && !this.isSheared() && !this.isBaby()) {
-         if(!this.world.isStatic) {
-            PlayerShearEntityEvent event = new PlayerShearEntityEvent((Player)entityhuman.getBukkitEntity(), this.getBukkitEntity());
-            this.world.getServer().getPluginManager().callEvent(event);
-            if(event.isCancelled()) {
-               return false;
-            }
-
-            this.setSheared(true);
-            int i = 1 + this.random.nextInt(3);
-
-            for(int j = 0; j < i; ++j) {
-               EntityItem entityitem = this.a(new ItemStack(Block.WOOL.id, 1, this.getColor()), 1.0F);
-               entityitem.motY += (double)(this.random.nextFloat() * 0.05F);
-               entityitem.motX += (double)((this.random.nextFloat() - this.random.nextFloat()) * 0.1F);
-               entityitem.motZ += (double)((this.random.nextFloat() - this.random.nextFloat()) * 0.1F);
-            }
-         }
-
-         itemstack.damage(1, entityhuman);
-         this.makeSound("mob.sheep.shear", 1.0F, 1.0F);
-      }
-
-      return super.a(entityhuman);
+      return super.a(entityhuman); // Forge
    }
 
    public void b(NBTTagCompound nbttagcompound) {
@@ -235,4 +213,25 @@ public class EntitySheep extends EntityAnimal {
       return this.b(entityageable);
    }
 
+   // Forge start
+   @Override
+   public boolean isShearable(ItemStack item, World world, int X, int Y, int Z)
+   {
+       return !isSheared() && !isBaby();
+   }
+   
+   @Override
+   public ArrayList<ItemStack> onSheared(ItemStack item, World world, int X, int Y, int Z, int fortune)
+   {
+       ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+       setSheared(true);
+       int i = 1 + random.nextInt(3);
+       for (int j = 0; j < i; j++)
+       {
+          ret.add(new ItemStack(Block.WOOL.id, 1, getColor()));
+       }
+       this.world.makeSound(this, "mob.sheep.shear", 1.0F, 1.0F);
+       return ret;
+   }
+   // Forge end
 }

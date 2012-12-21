@@ -172,10 +172,12 @@ public class StatisticList
      */
     private static Statistic[] a(String var0, int var1)
     {
+    	// Forge start
         Statistic[] var2 = new Statistic[Block.byId.length];
 
         for (int var3 = 0; var3 < Block.byId.length; ++var3)
         {
+        // Forge end
             if (Block.byId[var3] != null && Block.byId[var3].C())
             {
                 String var4 = LocaleI18n.get(var0, new Object[] {Block.byId[var3].getName()});

@@ -4,6 +4,7 @@ import java.util.Random;
 
 import org.bukkit.event.block.BlockRedstoneEvent; // CraftBukkit
 import net.minecraftforge.common.ForgeDirection;
+import static net.minecraftforge.common.ForgeDirection.*;
 
 public class BlockTripwireHook extends Block {
 
@@ -36,18 +37,28 @@ public class BlockTripwireHook extends Block {
     /**
      * checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
      */
-    public boolean canPlace(World var1, int var2, int var3, int var4, int var5)
+    public boolean canPlace(World world, int var2, int var3, int var4, int var5)
     {
-        ForgeDirection var6 = ForgeDirection.getOrientation(var5);
-        return var6 == ForgeDirection.NORTH && var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH) || var6 == ForgeDirection.SOUTH && var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH) || var6 == ForgeDirection.WEST && var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST) || var6 == ForgeDirection.EAST && var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST);
+    	// Forge start
+        ForgeDirection dir = getOrientation(var5);
+        return dir == NORTH && world.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH) || 
+        	   dir == SOUTH && world.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH) || 
+        	   dir == WEST && world.isBlockSolidOnSide(var2 + 1, var3, var4, WEST)   || 
+        	   dir == EAST && world.isBlockSolidOnSide(var2 - 1, var3, var4, EAST);
+        // Forge end
     }
 
     /**
      * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
      */
-    public boolean canPlace(World var1, int var2, int var3, int var4)
+    public boolean canPlace(World world, int var2, int var3, int var4)
     {
-        return var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.SOUTH) || var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.NORTH) || var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.EAST) || var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.WEST);
+    	// Forge start
+        return world.isBlockSolidOnSide(var2 - 1, var3, var4, SOUTH)  || 
+        	   world.isBlockSolidOnSide(var2 + 1, var3, var4, NORTH) || 
+        	   world.isBlockSolidOnSide(var2, var3, var4 - 1, EAST)  || 
+        	   world.isBlockSolidOnSide(var2, var3, var4 + 1, WEST);
+        // Forge end
     }
 
     /**
@@ -56,27 +67,27 @@ public class BlockTripwireHook extends Block {
     public void postPlace(World var1, int var2, int var3, int var4, int var5, float var6, float var7, float var8)
     {
         byte var9 = 0;
-
-        if (var5 == 2 && var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.WEST, true))
+        // Forge start
+        if (var5 == 2 && var1.isBlockSolidOnSide(var2, var3, var4 + 1, WEST, true))
         {
             var9 = 2;
         }
 
-        if (var5 == 3 && var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.EAST, true))
+        if (var5 == 3 && var1.isBlockSolidOnSide(var2, var3, var4 - 1, EAST, true))
         {
             var9 = 0;
         }
 
-        if (var5 == 4 && var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.NORTH, true))
+        if (var5 == 4 && var1.isBlockSolidOnSide(var2 + 1, var3, var4, NORTH, true))
         {
             var9 = 1;
         }
 
-        if (var5 == 5 && var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.SOUTH, true))
+        if (var5 == 5 && var1.isBlockSolidOnSide(var2 - 1, var3, var4, SOUTH, true))
         {
             var9 = 3;
         }
-
+        // Forge end
         this.a(var1, var2, var3, var4, this.id, var9, false, -1, 0);
     }
     /**
@@ -90,27 +101,27 @@ public class BlockTripwireHook extends Block {
             int var6 = var1.getData(var2, var3, var4);
             int var7 = var6 & 3;
             boolean var8 = false;
-
-            if (!var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.SOUTH) && var7 == 3)
+            // Forge start
+            if (!var1.isBlockSolidOnSide(var2 - 1, var3, var4, SOUTH) && var7 == 3)
             {
                 var8 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.NORTH) && var7 == 1)
+            if (!var1.isBlockSolidOnSide(var2 + 1, var3, var4, NORTH) && var7 == 1)
             {
                 var8 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.EAST) && var7 == 0)
+            if (!var1.isBlockSolidOnSide(var2, var3, var4 - 1, EAST) && var7 == 0)
             {
                 var8 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.WEST) && var7 == 2)
+            if (!var1.isBlockSolidOnSide(var2, var3, var4 + 1, WEST) && var7 == 2)
             {
                 var8 = true;
             }
-
+            // Forge end
             if (var8)
             {
                 this.c(var1, var2, var3, var4, var6, 0);
@@ -125,7 +136,7 @@ public class BlockTripwireHook extends Block {
         boolean flag2 = (i1 & 8) == 8;
         boolean flag3 = l == Block.TRIPWIRE_SOURCE.id;
         boolean flag4 = false;
-        boolean flag5 = !world.isBlockSolidOnSide(i, j - 1, k, ForgeDirection.UP);
+        boolean flag5 = !world.isBlockSolidOnSide(i, j - 1, k, UP); // Forge
         int i2 = Direction.a[l1];
         int j2 = Direction.b[l1];
         int k2 = 0;

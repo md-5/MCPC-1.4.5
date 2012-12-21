@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraftforge.common.ForgeHooks;
-
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -15,6 +13,8 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
+import net.minecraftforge.common.ForgeHooks;
+import static net.minecraftforge.event.entity.living.LivingEvent.*;
 // CraftBukkit start
 // CraftBukkit end
 
@@ -234,7 +234,7 @@ public abstract class EntityLiving extends Entity {
 	public void b(EntityLiving var1)
 	{
 		this.bM = var1;
-		ForgeHooks.onLivingSetAttackTarget(this, var1);
+		ForgeHooks.onLivingSetAttackTarget(this, var1); // Forge
 	}
 
 	public boolean a(Class oclass)
@@ -320,7 +320,7 @@ public abstract class EntityLiving extends Entity {
 	{
 		this.lastDamager = var1;
 		this.f = this.lastDamager != null ? 60 : 0;
-		ForgeHooks.onLivingSetAttackTarget(this, var1);
+		ForgeHooks.onLivingSetAttackTarget(this, var1); // Forge
 	}
 
 	@Override
@@ -604,11 +604,12 @@ public abstract class EntityLiving extends Entity {
 	@Override
 	public void j_()
 	{
+		// Forge start
 		if (ForgeHooks.onLivingUpdate(this))
 		{
 			return;
 		}
-		
+		// Forge end
 			super.j_();
 			if (!this.world.isStatic)
 			{
@@ -999,9 +1000,12 @@ public abstract class EntityLiving extends Entity {
 	{
 		if (!this.isInvulnerable())
 		{
+			// Forge start
 			var2 = ForgeHooks.onLivingHurt(this, var1, var2);
-
-			if (var2 <= 0) { return; }
+			if (var2 <= 0) { 
+				return; 
+			}
+			// Forge end
 
 			var2 = this.b(var1, var2);
 			var2 = this.c(var1, var2);
@@ -1052,8 +1056,12 @@ public abstract class EntityLiving extends Entity {
 	 */
 	public void die(DamageSource var1)
 	{
-		if (!ForgeHooks.onLivingDeath(this, var1))
+		// Forge start
+		if (ForgeHooks.onLivingDeath(this, var1))
 		{
+			return;
+		}
+		// Forge end
 			Entity var2 = var1.getEntity();
 
 			if (this.aK >= 0 && var2 != null)
@@ -1076,11 +1084,11 @@ public abstract class EntityLiving extends Entity {
 				{
 					var3 = EnchantmentManager.getBonusMonsterLootEnchantmentLevel((EntityLiving) var2);
 				}
-
+				// Forge start
 				this.captureDrops = true;
 				this.capturedDrops.clear();
 				int var4 = 0;
-
+				// Forge end
 				if (!this.isBaby() && this.world.getGameRules().getBoolean("doMobLoot"))
 				{
 					this.dropDeathLoot(this.lastDamageByPlayerTime > 0, var3);
@@ -1102,7 +1110,7 @@ public abstract class EntityLiving extends Entity {
 				{ // CraftBukkit
 					CraftEventFactory.callEntityDeathEvent(this); // CraftBukkit
 				}
-
+				// Forge start
 				this.captureDrops = false;
 
 				if (!ForgeHooks.onLivingDrops(this, var1, this.capturedDrops, var3, this.lastDamageByPlayerTime > 0, var4))
@@ -1115,10 +1123,10 @@ public abstract class EntityLiving extends Entity {
 						this.world.addEntity(var6);
 					}
 				}
+				// Forge end
 			}
 
 			this.world.broadcastEntityEffect(this, (byte) 3);
-		}
 	}
 
 	// CraftBukkit start - change return type to ItemStack
@@ -1177,9 +1185,12 @@ public abstract class EntityLiving extends Entity {
 	@Override
 	protected void a(float f)
 	{
+		// Forge start
 		f = ForgeHooks.onLivingFall(this, f);
-		if (f <= 0f) { return; }
-
+		if (f <= 0f) { 
+			return;
+		}
+		// Forge end
 		super.a(f);
 		int i = MathHelper.f(f - 3.0F);
 
@@ -1387,7 +1398,7 @@ public abstract class EntityLiving extends Entity {
 		int var2 = MathHelper.floor(this.boundingBox.b);
 		int var3 = MathHelper.floor(this.locZ);
 		int var4 = this.world.getTypeId(var1, var2, var3);
-		return ForgeHooks.isLivingOnLadder(Block.byId[var4], this.world, var1, var2, var3);
+		return ForgeHooks.isLivingOnLadder(Block.byId[var4], this.world, var1, var2, var3); // Forge
 	}
 
 	@Override
@@ -1771,7 +1782,7 @@ public abstract class EntityLiving extends Entity {
 		}
 
 		this.am = true;
-		ForgeHooks.onLivingJump(this);
+		ForgeHooks.onLivingJump(this); // Forge
 	}
 
 	protected boolean bj()
@@ -2565,8 +2576,23 @@ public abstract class EntityLiving extends Entity {
 	{
 		return false;
 	}
+	
+	public final int bJ()
+	{
+		return this.datawatcher.getByte(10);
+	}
 
-	public void curePotionEffects(ItemStack var1)
+	public final void r(int i)
+	{
+		this.datawatcher.watch(10, Byte.valueOf((byte) i));
+	}
+	
+	// Forge start
+	/***
+	 * Removes all potion effects that have curativeItem as a curative item for its effect
+	 * @param curativeItem The itemstack we are using to cure potion effects
+	 */
+	public void curePotionEffects(ItemStack curativeItem)
 	{
 		Iterator var2 = this.effects.keySet().iterator();
 
@@ -2577,7 +2603,7 @@ public abstract class EntityLiving extends Entity {
 				Integer var3 = (Integer) var2.next();
 				MobEffect var4 = (MobEffect) this.effects.get(var3);
 
-				if (var4.isCurativeItem(var1))
+				if (var4.isCurativeItem(curativeItem))
 				{
 					var2.remove();
 					this.c(var4);
@@ -2586,13 +2612,16 @@ public abstract class EntityLiving extends Entity {
 		}
 	}
 
-	public final int bJ()
+	/** 
+	 * Returns true if the entity's rider (EntityPlayer) should face forward when mounted.
+	 * currently only used in vanilla code by pigs.
+	 * 
+	 * @param player The player who is riding the entity.
+	 * @return If the player should orient the same direction as this entity.
+	 */
+	public boolean shouldRiderFaceForward(EntityHuman player)
 	{
-		return this.datawatcher.getByte(10);
+	    return this instanceof EntityPig;
 	}
-
-	public final void r(int i)
-	{
-		this.datawatcher.watch(10, Byte.valueOf((byte) i));
-	}
+	// Forge end
 }

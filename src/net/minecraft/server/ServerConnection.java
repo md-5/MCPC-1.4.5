@@ -58,7 +58,7 @@ public abstract class ServerConnection
                CrashReport var5 = CrashReport.a(var4, "Ticking memory connection");
                throw new ReportedException(var5);
                 }
-                FMLLog.log(Level.SEVERE, var4, "A critical server error occured handling a packet, kicking %s", new Object[] {var2});
+                FMLLog.log(Level.SEVERE, var4, "A critical server error occured handling a packet, kicking %s", new Object[] {var2}); // Forge
                 a.log(Level.WARNING, "Failed to handle packet for " + var2.player.getLocalizedName() + "/" + var2.player.q() + ": " + var4, var4);
                 var2.disconnect("Internal server error");
             }

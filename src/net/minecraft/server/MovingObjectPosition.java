@@ -25,7 +25,8 @@ public class MovingObjectPosition
 
     /** The hit entity */
     public Entity entity;
-    public int subHit = -1;
+    /** Used to determine what sub-segment is hit */
+    public int subHit = -1; // Forge
 
     public MovingObjectPosition(int var1, int var2, int var3, int var4, Vec3D var5)
     {

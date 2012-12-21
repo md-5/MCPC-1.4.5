@@ -6,12 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-
-import cpw.mods.fml.common.LoaderState.ModState;
-import cpw.mods.fml.common.event.FMLEvent;
-import cpw.mods.fml.common.event.FMLLoadEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLStateEvent;
 import mcpc.com.google.common.base.Joiner;
 import mcpc.com.google.common.collect.ArrayListMultimap;
 import mcpc.com.google.common.collect.BiMap;
@@ -23,6 +17,12 @@ import mcpc.com.google.common.collect.Multimap;
 import mcpc.com.google.common.collect.ImmutableMap.Builder;
 import mcpc.com.google.common.eventbus.EventBus;
 import mcpc.com.google.common.eventbus.Subscribe;
+
+import cpw.mods.fml.common.LoaderState.ModState;
+import cpw.mods.fml.common.event.FMLEvent;
+import cpw.mods.fml.common.event.FMLLoadEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLStateEvent;
 
 public class LoadController
 {
@@ -94,7 +94,7 @@ public class LoadController
             FMLLog.severe("Fatal errors were detected during the transition from %s to %s. Loading cannot continue", oldState, desiredState);
             StringBuilder sb = new StringBuilder();
             printModStates(sb);
-            FMLLog.severe(sb.toString());
+            FMLLog.getLogger().severe(sb.toString());
             FMLLog.severe("The following problems were captured during this phase");
             for (Entry<String, Throwable> error : errors.entries())
             {

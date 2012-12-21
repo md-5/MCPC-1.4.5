@@ -17,10 +17,10 @@ public abstract class BlockContainer extends Block
     /**
      * Called whenever the block is added into the world. Args: world, x, y, z
      */
-    public void onPlace(World var1, int var2, int var3, int var4)
+    public void onPlace(World world, int var2, int var3, int var4)
     {
-        super.onPlace(var1, var2, var3, var4);
-        var1.setTileEntity(var2, var3, var4, this.createTileEntity(var1, var1.getData(var2, var3, var4)));
+        super.onPlace(world, var2, var3, var4);
+        world.setTileEntity(var2, var3, var4, this.createTileEntity(world, world.getData(var2, var3, var4))); // Forge
     }
 
     /**
@@ -37,10 +37,12 @@ public abstract class BlockContainer extends Block
      */
     public abstract TileEntity a(World var1);
 
-    public TileEntity createNewTileEntity(World var1, int var2)
+    // Forge start
+    public TileEntity createNewTileEntity(World world, int metadata)
     {
-        return this.a(var1);
+        return this.a(world);
     }
+    // Forge end
 
     /**
      * Called when the block receives a BlockEvent - see World.addBlockEvent. By default, passes it on to the tile

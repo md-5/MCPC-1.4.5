@@ -91,7 +91,7 @@ public class LocaleLanguage
             }
         }
 
-        LanguageRegistry.instance().loadLanguageTable(var1, var2);
+        LanguageRegistry.instance().loadLanguageTable(var1, var2); // Forge
     }
 
     public void a(String var1)

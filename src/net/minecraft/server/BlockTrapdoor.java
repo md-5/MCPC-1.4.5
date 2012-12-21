@@ -4,7 +4,9 @@ import org.bukkit.event.block.BlockRedstoneEvent; // CraftBukkit
 import net.minecraftforge.common.ForgeDirection;
 
 public class BlockTrapdoor extends Block {
-    public static boolean disableValidation = false;
+	
+	/** Set this to allow trapdoors to remain free-floating */
+    public static boolean disableValidation = false; // Forge
     
     protected BlockTrapdoor(int i, Material material) {
         super(i, material);
@@ -125,7 +127,7 @@ public class BlockTrapdoor extends Block {
                 --j1;
             }
 
-            if (!j(world.getTypeId(j1, j, k1)) && !world.isBlockSolidOnSide(j1, j, k1, ForgeDirection.getOrientation((i1 & 3) + 2))) {
+            if (!j(world.getTypeId(j1, j, k1)) && !world.isBlockSolidOnSide(j1, j, k1, ForgeDirection.getOrientation((i1 & 3) + 2))) { // Forge
                 world.setTypeId(i, j, k, 0);
                 this.c(world, i, j, k, i1, 0);
             }
@@ -185,10 +187,12 @@ public class BlockTrapdoor extends Block {
      */
     public boolean canPlace(World var1, int var2, int var3, int var4, int var5)
     {
+    	// Forge start
         if (disableValidation)
         {
             return true;
         }
+        // Forge end
         else if (var5 == 0)
         {
             return false;

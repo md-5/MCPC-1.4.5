@@ -64,7 +64,7 @@ public abstract class WorldProvider
      */
     protected void b()
     {
-        this.d = this.type.getChunkManager(this.a);
+        this.d = this.type.getChunkManager(this.a); // Forge
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class WorldProvider
      */
     public IChunkProvider getChunkProvider()
     {
-        return this.type.getChunkGenerator(this.a, this.c);
+        return this.type.getChunkGenerator(this.a, this.c); // Forge
     }
 
     /**
@@ -139,7 +139,7 @@ public abstract class WorldProvider
 
     public int getSeaLevel()
     {
-        return this.type.getMinimumSpawnHeight(this.a);
+        return this.type.getMinimumSpawnHeight(this.a); // Forge
     }
 
     /**

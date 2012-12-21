@@ -5,7 +5,7 @@ import java.util.Random;
 import net.minecraftforge.common.IShearable;
 import org.bukkit.event.block.LeavesDecayEvent; // CraftBukkit
 
-public class BlockLeaves extends BlockTransparant implements IShearable {
+public class BlockLeaves extends BlockTransparant implements IShearable { // Forge
 
     private int cD;
     public static final String[] a = new String[] { "oak", "spruce", "birch", "jungle"};
@@ -27,11 +27,11 @@ public class BlockLeaves extends BlockTransparant implements IShearable {
                 for (int l1 = -b0; l1 <= b0; ++l1) {
                     for (int i2 = -b0; i2 <= b0; ++i2) {
                         int j2 = world.getTypeId(i + k1, j + l1, k + i2);
-
+                        // Forge start
                         if (Block.byId[j2] != null)
                         {
                             Block.byId[j2].beginLeavesDecay(world, i + k1, j + l1, k + i2);
-                        }
+                        } // Forge end
                     }
                 }
             }
@@ -75,13 +75,15 @@ public class BlockLeaves extends BlockTransparant implements IShearable {
                             for (var14 = -var7; var14 <= var7; ++var14)
                             {
                                 var15 = var1.getTypeId(var2 + var12, var3 + var13, var4 + var14);
-                                Block var16 = Block.byId[var15];
+                                // Forge start
+                                Block block = Block.byId[var15];
 
-                                if (var16 != null && var16.canSustainLeaves(var1, var2 + var12, var3 + var13, var4 + var14))
-                                {
+                                if (block != null && block.canSustainLeaves(var1, var2 + var12, var3 + var13, var4 + var14))
+                                { 
+                                	// Forge end
                                     this.b[(var12 + var11) * var10 + (var13 + var11) * var9 + var14 + var11] = 0;
                                 }
-                                else if (var16 != null && var16.isLeaves(var1, var2 + var12, var3 + var13, var4 + var14))
+                                else if (block != null && block.isLeaves(var1, var2 + var12, var3 + var13, var4 + var14)) // Forge
                                 {
                                     this.b[(var12 + var11) * var10 + (var13 + var11) * var9 + var14 + var11] = -2;
                                 }
@@ -196,12 +198,7 @@ public class BlockLeaves extends BlockTransparant implements IShearable {
     }
 
     public void a(World world, EntityHuman entityhuman, int i, int j, int k, int l) {
-        if (!world.isStatic && entityhuman.bT() != null && entityhuman.bT().id == Item.SHEARS.id) {
-            entityhuman.a(StatisticList.C[this.id], 1);
-            this.b(world, i, j, k, new ItemStack(Block.LEAVES.id, 1, l & 3));
-        } else {
-            super.a(world, entityhuman, i, j, k, l);
-        }
+        super.a(world, entityhuman, i, j, k, l); // Forge
     }
 
     public int getDropData(int i) {
@@ -216,7 +213,7 @@ public class BlockLeaves extends BlockTransparant implements IShearable {
         return (j & 3) == 1 ? this.textureId + 80 : ((j & 3) == 3 ? this.textureId + 144 : this.textureId);
     }
     
-
+    // Forge start
     public boolean isShearable(ItemStack var1, World var2, int var3, int var4, int var5)
     {
         return true;
@@ -238,4 +235,5 @@ public class BlockLeaves extends BlockTransparant implements IShearable {
     {
         return true;
     }
+    // Forge end
 }

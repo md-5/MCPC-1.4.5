@@ -3,12 +3,12 @@ package cpw.mods.fml.common.versioning;
 import java.util.List;
 import java.util.logging.Level;
 
-
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.LoaderException;
 import mcpc.com.google.common.base.Splitter;
 import mcpc.com.google.common.base.Strings;
 import mcpc.com.google.common.collect.Lists;
+
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.LoaderException;
 
 /**
  * Parses version strings according to the specification here:

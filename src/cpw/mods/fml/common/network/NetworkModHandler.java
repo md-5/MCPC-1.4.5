@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import net.minecraft.server.Item;
 
+import mcpc.com.google.common.base.Strings;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -16,7 +17,6 @@ import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.versioning.DefaultArtifactVersion;
 import cpw.mods.fml.common.versioning.InvalidVersionSpecificationException;
 import cpw.mods.fml.common.versioning.VersionRange;
-import mcpc.com.google.common.base.Strings;
 
 public class NetworkModHandler
 {
@@ -136,6 +136,7 @@ public class NetworkModHandler
                 FMLLog.log(Level.SEVERE, e, "Unable to create connection handler instance %s", mod.connectionHandler().getName());
                 throw new FMLNetworkException(e);
             }
+
             NetworkRegistry.instance().registerConnectionHandler(instance);
         }
 

@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+import java.util.ArrayList;
 import java.util.Random;
 import net.minecraft.server.Block;
 import net.minecraft.server.BlockFlower;
@@ -8,6 +9,8 @@ import net.minecraft.server.Item;
 import net.minecraft.server.ItemStack;
 import net.minecraft.server.World;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
+
+import net.minecraftforge.common.ForgeDirection;
 
 public class BlockCrops extends BlockFlower {
 
@@ -65,9 +68,9 @@ public class BlockCrops extends BlockFlower {
          for(int i3 = k - 1; i3 <= k + 1; ++i3) {
             int j3 = world.getTypeId(l2, j - 1, i3);
             float f1 = 0.0F;
-            if(j3 == Block.SOIL.id) {
+            if (byId[j3] != null && byId[j3].canSustainPlant(world, l2, j - 1, i3, ForgeDirection.UP, this)) { // Forge
                f1 = 1.0F;
-               if(world.getData(l2, j - 1, i3) > 0) {
+               if (byId[j3].isFertile(world, l2, j - 1, i3)) { // Forge
                   f1 = 3.0F;
                }
             }
@@ -107,19 +110,27 @@ public class BlockCrops extends BlockFlower {
       return Item.WHEAT.id;
    }
 
+   // Forge start
    public void dropNaturally(World world, int i, int j, int k, int l, float f, int i1) {
       super.dropNaturally(world, i, j, k, l, f, 0);
-      if(!world.isStatic && l >= 7) {
-         int j1 = 3 + i1;
-
-         for(int k1 = 0; k1 < j1; ++k1) {
-            if(world.random.nextInt(15) <= l) {
-               this.b(world, i, j, k, new ItemStack(this.h(), 1, 0));
-            }
-         }
-      }
-
    }
+   
+   public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
+   {
+	   ArrayList<ItemStack> ret = super.getBlockDropped(world, x, y, z, metadata, fortune);
+	   if (metadata >= 7)
+	   {
+		   for (int n = 0; n < 3 + fortune; n++)
+		   {
+			   if (world.random.nextInt(15) <= metadata)
+			   {
+				   ret.add(new ItemStack(this.h(), 1, 0));
+			   }
+		   }
+	   }
+	   return ret;
+   }
+   // Forge end
 
    public int getDropType(int i, Random random, int j) {
       return i == 7?this.j():this.h();

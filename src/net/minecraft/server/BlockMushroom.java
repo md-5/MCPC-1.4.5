@@ -93,8 +93,11 @@ public class BlockMushroom extends BlockFlower {
         if (var3 >= 0 && var3 < 256)
         {
             int var5 = world.getTypeId(var2, var3 - 1, var4);
-            Block var6 = Block.byId[var5];
-            return (var5 == Block.MYCEL.id || world.l(var2, var3, var4) < 13) && var6 != null && var6.canSustainPlant(world, var2, var3 - 1, var4, ForgeDirection.UP, this);
+            // Forge start
+            Block soil = Block.byId[var5];
+            return (var5 == Block.MYCEL.id || world.l(var2, var3, var4) < 13) && 
+            		soil != null && soil.canSustainPlant(world, var2, var3 - 1, var4, ForgeDirection.UP, this);
+            // Forge end
         }
         else
         {

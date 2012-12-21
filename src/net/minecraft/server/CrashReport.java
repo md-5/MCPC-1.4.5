@@ -45,6 +45,7 @@ public class CrashReport {
         this.c.a("Suspicious classes", (Callable) (new CrashReportSuspiciousClasses(this)));
         this.c.a("IntCache", (Callable) (new CrashReportIntCacheSize(this)));
         this.c.a("CraftBukkit Information", (Callable) (new org.bukkit.craftbukkit.CraftCrashReport())); // CraftBukkit
+        FMLCommonHandler.instance().enhanceCrashReport(this, this.field_85061_c); // Forge
     }
 
     public String a() {

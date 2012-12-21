@@ -7,6 +7,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ISpecialArmor.ArmorProperties;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
@@ -24,13 +25,12 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLNetworkHandler;
 
-public abstract class EntityHuman extends EntityLiving implements ICommandListener {
+public abstract class EntityHuman extends EntityLiving implements ICommandListener, cpw.mods.fml.common.network.Player {
 
-	// Forge start
-	public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
+	public static final String PERSISTED_NBT_TAG = "PlayerPersisted"; // Forge
     public PlayerInventory inventory = new PlayerInventory(this);
     private InventoryEnderChest enderChest = new InventoryEnderChest();
-    // Forge end
+
     public Container defaultContainer;
     public Container activeContainer;
     protected FoodMetaData foodData = new FoodMetaData();
@@ -131,7 +131,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
             ItemStack itemstack = this.inventory.getItemInHand();
 
             if (itemstack == this.f) {
-            	 this.f.getItem().onUsingItemTick(this.f, this, this.g);
+            	 this.f.getItem().onUsingItemTick(this.f, this, this.g); // Forge
             	 
                 if (this.g <= 25 && this.g % 4 == 0) {
                     this.c(itemstack, 5);
@@ -298,10 +298,10 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
         this.bO = this.bP;
         this.bP = 0.0F;
         this.k(this.locX - d0, this.locY - d1, this.locZ - d2);
-        if (this.vehicle instanceof EntityPig) {
+        if (this.vehicle instanceof EntityLiving && ((EntityLiving)vehicle).shouldRiderFaceForward(this)) {
             this.pitch = f1;
             this.yaw = f;
-            this.aw = ((EntityPig) this.vehicle).aw;
+            this.aw = ((EntityLiving) this.vehicle).aw;
         }
     }
 
@@ -385,9 +385,10 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
         this.a(0.2F, 0.2F);
         this.setPosition(this.locX, this.locY, this.locZ);
         this.motY = 0.10000000149011612D;
+        // Forge start
         this.captureDrops = true;
         this.capturedDrops.clear();
-        
+        // Forge end
         if (this.name.equals("Notch")) {
             this.a(new ItemStack(Item.APPLE, 1), true);
         }
@@ -395,7 +396,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
         if (!this.world.getGameRules().getBoolean("keepInventory")) {
             this.inventory.l();
         }
-        
+        // Forge start
         this.captureDrops = false;
 
         if (!this.world.isStatic)
@@ -413,6 +414,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
                 }
             }
         }
+        // Forge end
 
         if (damagesource != null) {
             this.motX = (double) (-MathHelper.cos((this.aW + this.yaw) * 3.1415927F / 180.0F) * 0.1F);
@@ -439,8 +441,10 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
      */
     public EntityItem bR()
     {
+    	// Forge start
         ItemStack var1 = this.inventory.getItemInHand();
         return var1 == null ? null : (var1.getItem().onDroppedByPlayer(var1, this) ? ForgeHooks.onPlayerTossEvent(this, this.inventory.splitStack(this.inventory.itemInHandIndex, 1)) : null);
+        // Forge end
     }
 
     /**
@@ -449,7 +453,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
      */
     public EntityItem drop(ItemStack var1)
     {
-        return ForgeHooks.onPlayerTossEvent(this, var1);
+        return ForgeHooks.onPlayerTossEvent(this, var1); // Forge
     }
 
     public EntityItem a(ItemStack itemstack, boolean flag) {
@@ -506,6 +510,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
      */
     public void a(EntityItem var1)
     {
+    	// Forge start
         if (this.captureDrops)
         {
             this.capturedDrops.add(var1);
@@ -514,25 +519,28 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
         {
             this.world.addEntity(var1);
         }
+        // Forge end
     }
-
-    @Deprecated
 
     /**
      * Returns how strong the player is against the specified block at this moment
+     * Deprecated in favor of the more sensitive version
      */
+    @Deprecated
     public float a(Block var1)
     {
-        return this.getCurrentPlayerStrVsBlock(var1, 0);
+        return this.getCurrentPlayerStrVsBlock(var1, 0); // Forge
     }
 
-    public float getCurrentPlayerStrVsBlock(Block var1, int var2)
+    public float getCurrentPlayerStrVsBlock(Block block, int meta)
     {
-        ItemStack var3 = this.inventory.getItemInHand();
-        float var4 = var3 == null ? 1.0F : var3.getItem().getStrVsBlock(var3, var1, var2);
+    	// Forge start
+        ItemStack stack = this.inventory.getItemInHand();
+        float var4 = stack == null ? 1.0F : stack.getItem().getStrVsBlock(stack, block, meta);
+        // Forge end
         int var5 = EnchantmentManager.getDigSpeedEnchantmentLevel(this);
 
-        if (var5 > 0 && ForgeHooks.canHarvestBlock(var1, this, var2))
+        if (var5 > 0 && ForgeHooks.canHarvestBlock(block, this, meta)) // Forge
         {
             var4 += (float)(var5 * var5 + 1);
         }
@@ -556,9 +564,10 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
         {
             var4 /= 5.0F;
         }
-
-        var4 = ForgeEventFactory.getBreakSpeed(this, var1, var2, var4);
+        // Forge start
+        var4 = ForgeEventFactory.getBreakSpeed(this, block, meta, var4);
         return var4 < 0.0F ? 0.0F : var4;
+        // Forge end
     }
 
     /**
@@ -566,7 +575,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
      */
     public boolean b(Block var1)
     {
-        return ForgeEventFactory.doPlayerHarvestCheck(this, var1, this.inventory.b(var1));
+        return ForgeEventFactory.doPlayerHarvestCheck(this, var1, this.inventory.b(var1)); // Forge
     }
 
     public void a(NBTTagCompound nbttagcompound) {
@@ -774,17 +783,21 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
     {
         if (!this.isInvulnerable()) 
         {
+        	// Forge start
             i = ForgeHooks.onLivingHurt(this, damagesource, i);
             if (i <= 0)
                 return;
+            // Forge end
             
             if (!damagesource.ignoresArmor() && this.bh()) {
                 i = 1 + i >> 1;
             }
 
+            // Forge start
             i = ArmorProperties.ApplyArmor(this, this.inventory.armor, damagesource, (double)i);
             if (i <= 0)
                 return;
+            // Forge end
             
             i = this.c(damagesource, i);
             this.j(damagesource.d());
@@ -807,10 +820,12 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
     public void d(ItemStack itemstack) {}
 
     public boolean p(Entity entity) {
+    	// Forge start
     	if (MinecraftForge.EVENT_BUS.post(new EntityInteractEvent(this, entity)))
         {
             return false;
         }
+    	// Forge end
         else if (entity.a(this)) {
             return true;
         } else {
@@ -844,9 +859,9 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
      */
     public void bU()
     {
-        ItemStack var1 = this.bT();
+        ItemStack var1 = this.bT(); // Forge
         this.inventory.setItem(this.inventory.itemInHandIndex, (ItemStack)null);
-        MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(this, var1));
+        MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(this, var1)); // Forge
     }
 
     public double W() {
@@ -859,119 +874,123 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
      */
     public void attack(Entity entity)
     {
-        if (!MinecraftForge.EVENT_BUS.post(new AttackEntityEvent(this, entity)))
+    	// Forge start
+        if (MinecraftForge.EVENT_BUS.post(new AttackEntityEvent(this, entity)))
         {
-            ItemStack var2 = this.bT();
+        	return;
+        }
+        ItemStack stack = this.bT();
 
-            if (var2 == null || !var2.getItem().onLeftClickEntity(var2, this, entity))
-            {
-                if (entity.aq())
-                {
-                    int i = this.inventory.a(entity);
+        if (stack != null && stack.getItem().onLeftClickEntity(stack, this, entity))
+        {
+        	return;
+        }
+        // Forge end
+        if (entity.aq())
+        {
+            int i = this.inventory.a(entity);
 
-                if (this.hasEffect(MobEffectList.INCREASE_DAMAGE)) {
-                        i += 3 << this.getEffect(MobEffectList.INCREASE_DAMAGE).getAmplifier();
+        if (this.hasEffect(MobEffectList.INCREASE_DAMAGE)) {
+                i += 3 << this.getEffect(MobEffectList.INCREASE_DAMAGE).getAmplifier();
+            }
+
+        if (this.hasEffect(MobEffectList.WEAKNESS)) {
+                i -= 2 << this.getEffect(MobEffectList.WEAKNESS).getAmplifier();
+            }
+
+            int j = 0;
+            int k = 0;
+
+        if (entity instanceof EntityLiving) {
+            k = EnchantmentManager.a((EntityLiving) this, (EntityLiving) entity);
+                j += EnchantmentManager.getKnockbackEnchantmentLevel(this, (EntityLiving)entity);
+            }
+
+        if (this.isSprinting()) {
+                ++j;
+            }
+
+        if (i > 0 || k > 0) {
+                boolean flag = this.fallDistance > 0.0F && !this.onGround && !this.g_() && !this.H() && !this.hasEffect(MobEffectList.BLINDNESS) && this.vehicle == null && entity instanceof EntityLiving;
+
+            if (flag) {
+                    i += this.random.nextInt(i / 2 + 2);
+                }
+
+                i += k;
+            boolean flag1 = false;
+            int l = EnchantmentManager.getFireAspectEnchantmentLevel(this);
+
+            if (entity instanceof EntityLiving && l > 0 && !entity.isBurning()) {
+                flag1 = true;
+                entity.setOnFire(1);
+            }
+
+                boolean flag2 = entity.damageEntity(DamageSource.playerAttack(this), i);
+                
+            // CraftBukkit start - Return when the damage fails so that the item will not lose durability
+            if (!flag2) {
+                if (flag1) {
+                    entity.extinguish();
+                }
+                return;
+            }
+            // CraftBukkit end
+
+            if (flag2) {
+                if (j > 0) {
+                    entity.g((double) (-MathHelper.sin(this.yaw * 3.1415927F / 180.0F) * (float) j * 0.5F), 0.1D, (double) (MathHelper.cos(this.yaw * 3.1415927F / 180.0F) * (float) j * 0.5F));
+                        this.motX *= 0.6D;
+                        this.motZ *= 0.6D;
+                        this.setSprinting(false);
                     }
 
-                if (this.hasEffect(MobEffectList.WEAKNESS)) {
-                        i -= 2 << this.getEffect(MobEffectList.WEAKNESS).getAmplifier();
+                if (flag) {
+                        this.b(entity);
                     }
 
-                    int j = 0;
-                    int k = 0;
-
-                if (entity instanceof EntityLiving) {
-                    k = EnchantmentManager.a((EntityLiving) this, (EntityLiving) entity);
-                        j += EnchantmentManager.getKnockbackEnchantmentLevel(this, (EntityLiving)entity);
+                if (k > 0) {
+                        this.c(entity);
                     }
 
-                if (this.isSprinting()) {
-                        ++j;
+                if (i >= 18) {
+                    this.a((Statistic) AchievementList.E);
                     }
 
-                if (i > 0 || k > 0) {
-                        boolean flag = this.fallDistance > 0.0F && !this.onGround && !this.g_() && !this.H() && !this.hasEffect(MobEffectList.BLINDNESS) && this.vehicle == null && entity instanceof EntityLiving;
+                this.l(entity);
+                }
 
-                    if (flag) {
-                            i += this.random.nextInt(i / 2 + 2);
-                        }
+                ItemStack itemstack = this.bT();
 
-                        i += k;
-                    boolean flag1 = false;
-                    int l = EnchantmentManager.getFireAspectEnchantmentLevel(this);
-
-                    if (entity instanceof EntityLiving && l > 0 && !entity.isBurning()) {
-                        flag1 = true;
-                        entity.setOnFire(1);
-                    }
-
-                        boolean flag2 = entity.damageEntity(DamageSource.playerAttack(this), i);
-                        
-                    // CraftBukkit start - Return when the damage fails so that the item will not lose durability
-                    if (!flag2) {
-                        if (flag1) {
-                            entity.extinguish();
-                        }
-                        return;
-                    }
-                    // CraftBukkit end
-
-                    if (flag2) {
-                        if (j > 0) {
-                            entity.g((double) (-MathHelper.sin(this.yaw * 3.1415927F / 180.0F) * (float) j * 0.5F), 0.1D, (double) (MathHelper.cos(this.yaw * 3.1415927F / 180.0F) * (float) j * 0.5F));
-                                this.motX *= 0.6D;
-                                this.motZ *= 0.6D;
-                                this.setSprinting(false);
-                            }
-
-                        if (flag) {
-                                this.b(entity);
-                            }
-
-                        if (k > 0) {
-                                this.c(entity);
-                            }
-
-                        if (i >= 18) {
-                            this.a((Statistic) AchievementList.E);
-                            }
-
-                        this.l(entity);
-                        }
-
-                        ItemStack itemstack = this.bT();
-
-                    if (itemstack != null && entity instanceof EntityLiving) {
-                            itemstack.a((EntityLiving)entity, this);
-                            // CraftBukkit - bypass infinite items; <= 0 -> == 0
-                            if (itemstack.count == 0) {
-                            this.bU();
-                            }
-                        }
-
-                    if (entity instanceof EntityLiving) {
-                        if (entity.isAlive()) {
-                                this.a((EntityLiving)entity, true);
-                            }
-
-                            this.a(StatisticList.w, i);
-                            if (l > 0 && flag2) {
-                                // CraftBukkit start - raise a combust event when somebody hits with a fire enchanted item
-                                EntityCombustByEntityEvent combustEvent = new EntityCombustByEntityEvent(this.getBukkitEntity(), entity.getBukkitEntity(), l * 4);
-                                org.bukkit.Bukkit.getPluginManager().callEvent(combustEvent);
-
-                                if (!combustEvent.isCancelled()) {
-                                	entity.setOnFire(combustEvent.getDuration());
-                                }
-                                // CraftBukkit end
-                        } else if (flag1) {
-                            entity.extinguish();
-                            }
-                        }
-
-                        this.j(0.3F);
+            if (itemstack != null && entity instanceof EntityLiving) {
+                    itemstack.a((EntityLiving)entity, this);
+                    // CraftBukkit - bypass infinite items; <= 0 -> == 0
+                    if (itemstack.count == 0) {
+                    this.bU();
                     }
                 }
+
+            if (entity instanceof EntityLiving) {
+                if (entity.isAlive()) {
+                        this.a((EntityLiving)entity, true);
+                    }
+
+                    this.a(StatisticList.w, i);
+                    if (l > 0 && flag2) {
+                        // CraftBukkit start - raise a combust event when somebody hits with a fire enchanted item
+                        EntityCombustByEntityEvent combustEvent = new EntityCombustByEntityEvent(this.getBukkitEntity(), entity.getBukkitEntity(), l * 4);
+                        org.bukkit.Bukkit.getPluginManager().callEvent(combustEvent);
+
+                        if (!combustEvent.isCancelled()) {
+                        	entity.setOnFire(combustEvent.getDuration());
+                        }
+                        // CraftBukkit end
+                } else if (flag1) {
+                    entity.extinguish();
+                    }
+                }
+
+                this.j(0.3F);
             }
         }
     }
@@ -1001,6 +1020,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
      */
     public EnumBedResult a(int var1, int var2, int var3)
     {
+    	// Forge start
         PlayerSleepInBedEvent var4 = new PlayerSleepInBedEvent(this, var1, var2, var3);
         MinecraftForge.EVENT_BUS.post(var4);
 
@@ -1008,6 +1028,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
         {
             return var4.result;
         }
+        // Forge end
         else
         {
             if (!this.world.isStatic)
@@ -1062,13 +1083,14 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
             {
                 int var10 = this.world.getData(var1, var2, var3);
                 int var6 = BlockBed.e(var10);
+                // Forge start
                 Block var11 = Block.byId[this.world.getTypeId(var1, var2, var3)];
 
                 if (var11 != null)
                 {
                     var6 = var11.getBedDirection(this.world, var1, var2, var3);
                 }
-
+                // Forge end
                 float var8 = 0.5F;
                 float var12 = 0.5F;
 
@@ -1138,14 +1160,14 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
         this.e_();
         ChunkCoordinates chunkcoordinates = this.bZ;
         ChunkCoordinates chunkcoordinates1 = this.bZ;
+        // Forge start
+        Block block = chunkcoordinates == null ? null : Block.byId[this.world.getTypeId(chunkcoordinates.x, chunkcoordinates.y, chunkcoordinates.z)];
 
-        Block var6 = chunkcoordinates == null ? null : Block.byId[this.world.getTypeId(chunkcoordinates.x, chunkcoordinates.y, chunkcoordinates.z)];
-
-        if (chunkcoordinates != null && var6 != null && var6.isBed(this.world, chunkcoordinates.x, chunkcoordinates.y, chunkcoordinates.z, this))
+        if (chunkcoordinates != null && block != null && block.isBed(this.world, chunkcoordinates.x, chunkcoordinates.y, chunkcoordinates.z, this))
         {
-            var6.setBedOccupied(this.world, chunkcoordinates.x, chunkcoordinates.y, chunkcoordinates.z, this, false);
-            chunkcoordinates1 = var6.getBedSpawnPosition(this.world, chunkcoordinates.x, chunkcoordinates.y, chunkcoordinates.z, this);
-            
+            block.setBedOccupied(this.world, chunkcoordinates.x, chunkcoordinates.y, chunkcoordinates.z, this, false);
+            chunkcoordinates1 = block.getBedSpawnPosition(this.world, chunkcoordinates.x, chunkcoordinates.y, chunkcoordinates.z, this);
+        // Forge end 
             if (chunkcoordinates1 == null) {
                 chunkcoordinates1 = new ChunkCoordinates(chunkcoordinates.x, chunkcoordinates.y + 1, chunkcoordinates.z);
             }
@@ -1190,9 +1212,11 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
      */
     private boolean j()
     {
+    	// Forge start
         ChunkCoordinates var1 = this.bZ;
         int var2 = this.world.getTypeId(var1.x, var1.y, var1.z);
         return Block.byId[var2] != null && Block.byId[var2].isBed(this.world, var1.x, var1.y, var1.z, this);
+        // Forge end
     }
 
     /**
@@ -1206,11 +1230,14 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
         var3.getChunkAt(var1.x + 3 >> 4, var1.z - 3 >> 4);
         var3.getChunkAt(var1.x - 3 >> 4, var1.z + 3 >> 4);
         var3.getChunkAt(var1.x + 3 >> 4, var1.z + 3 >> 4);
-        Block var5 = Block.byId[var0.getTypeId(var1.x, var1.y, var1.z)];
+        // Forge start
+        ChunkCoordinates c = var1;
+        Block block = Block.byId[var0.getTypeId(c.x, c.y, c.z)];
 
-        if (var5 != null && var5.isBed(var0, var1.x, var1.y, var1.z, (EntityLiving)null))
+        if (block != null && block.isBed(var0, c.x, c.y, c.z, (EntityLiving)null))
         {
-            ChunkCoordinates var6 = var5.getBedSpawnPosition(var0, var1.x, var1.y, var1.z, (EntityHuman)null);
+            ChunkCoordinates var6 = block.getBedSpawnPosition(var0, c.x, c.y, c.z, (EntityHuman)null);
+        // Forge end
             return var6;
         }
         else

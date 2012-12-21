@@ -15,7 +15,7 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 // CraftBukkit end
 
-public class TileEntityFurnace extends TileEntity implements IInventory, ISidedInventory {
+public class TileEntityFurnace extends TileEntity implements IInventory, ISidedInventory { // Forge
 
     private ItemStack[] items = new ItemStack[3];
     public int burnTime = 0;
@@ -194,7 +194,7 @@ public class TileEntityFurnace extends TileEntity implements IInventory, ISidedI
                     if (this.items[1] != null) {
                         --this.items[1].count;
                         if (this.items[1].count == 0) {
-                            this.items[1] = this.items[1].getItem().getContainerItemStack(this.items[1]);
+                            this.items[1] = this.items[1].getItem().getContainerItemStack(this.items[1]); // Forge
                         }
                     }
                 }
@@ -228,6 +228,7 @@ public class TileEntityFurnace extends TileEntity implements IInventory, ISidedI
         if (this.items[0] == null) {
             return false;
         } else {
+        	// Forge start
             ItemStack var1 = RecipesFurnace.getInstance().getSmeltingResult(this.items[0]);
 
             if (var1 == null)
@@ -247,12 +248,13 @@ public class TileEntityFurnace extends TileEntity implements IInventory, ISidedI
                 int var2 = this.items[2].count + var1.count;
                 return var2 <= this.getMaxStackSize() && var2 <= var1.getMaxStackSize();
             }
+            // Forge end
         }
     }
 
     public void burn() {
         if (this.canBurn()) {
-            ItemStack itemstack = RecipesFurnace.getInstance().getSmeltingResult(this.items[0]);
+            ItemStack itemstack = RecipesFurnace.getInstance().getSmeltingResult(this.items[0]); // Forge
 
             // CraftBukkit start
             CraftItemStack source = new CraftItemStack(this.items[0]);

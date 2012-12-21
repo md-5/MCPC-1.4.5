@@ -19,6 +19,10 @@ import net.minecraft.server.TileEntity;
 import net.minecraft.server.World;
 import net.minecraft.server.WorldType;
 
+import mcpc.com.google.common.collect.ArrayListMultimap;
+import mcpc.com.google.common.collect.Lists;
+import mcpc.com.google.common.collect.Multimap;
+import mcpc.com.google.common.collect.Sets;
 
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.ICraftingHandler;
@@ -33,10 +37,6 @@ import cpw.mods.fml.common.LoaderException;
 import cpw.mods.fml.common.LoaderState;
 import cpw.mods.fml.common.Mod.Block;
 import cpw.mods.fml.common.ModContainer;
-import mcpc.com.google.common.collect.ArrayListMultimap;
-import mcpc.com.google.common.collect.Lists;
-import mcpc.com.google.common.collect.Multimap;
-import mcpc.com.google.common.collect.Sets;
 
 public class GameRegistry
 {
@@ -83,33 +83,29 @@ public class GameRegistry
         }
     }
 
+    /**
+     * Deprecated without replacement. Use vanilla DispenserRegistry code
+     *
+     * @param handler
+     */
+    @Deprecated
     public static void registerDispenserHandler(IDispenserHandler handler)
     {
-        dispenserHandlers.add(handler);
     }
     /**
-     * Register a handler for dispensers
+     * Deprecated without replacement. Use vanilla DispenserRegistry code
      *
      * @param handler
      */
     @Deprecated
     public static void registerDispenserHandler(final IDispenseHandler handler)
     {
-        registerDispenserHandler(new IDispenserHandler()
-        {
-
-            @Override
-            public int dispense(int x, int y, int z, int xVelocity, int zVelocity, World world, ItemStack item, Random random, double entX, double entY, double entZ)
-            {
-                return handler.dispense(x, y, z, xVelocity, zVelocity, world, item, random, entX, entY, entZ);
-            }
-        });
     }
 
 
     /**
-     * Callback hook for dispenser activities - if you add a block and want mods to be able
-     * to extend their dispenser related activities to it call this
+     *
+     * Deprecated without replacement, use vanilla DispenserRegistry code
      *
      * @param world
      * @param x
@@ -119,16 +115,9 @@ public class GameRegistry
      * @param zVelocity
      * @param item
      */
+    @Deprecated
     public static int tryDispense(World world, int x, int y, int z, int xVelocity, int zVelocity, ItemStack item, Random random, double entX, double entY, double entZ)
     {
-        for (IDispenserHandler handler : dispenserHandlers)
-        {
-            int dispensed = handler.dispense(x, y, z, xVelocity, zVelocity, world, item, random, entX, entY, entZ);
-            if (dispensed>-1)
-            {
-                return dispensed;
-            }
-        }
         return -1;
     }
     /**
@@ -302,4 +291,5 @@ public class GameRegistry
 		for(IPlayerTracker tracker : playerTrackers)
 			tracker.onPlayerRespawn(player);
 	}
+
 }

@@ -18,7 +18,7 @@ public class WorldMap extends WorldMapBase {
 
     public int centerX;
     public int centerZ;
-    public int map;
+    public int map; // Forge - changed from byte to int
     public byte scale;
     public byte[] colors = new byte[16384];
     public List f = new ArrayList();
@@ -43,12 +43,14 @@ public class WorldMap extends WorldMapBase {
         // CraftBukkit start
     	
         int dimension;
+        // Forge start
         NBTBase var2 = nbttagcompound.get("dimension");
         if (var2 instanceof NBTTagByte)
         	dimension = ((NBTTagByte)var2).data;
         else
         	dimension = ((NBTTagInt)var2).data;
-
+        // Forge end
+        
         if (this.map >= 10) {
             long least = nbttagcompound.getLong("UUIDLeast");
             long most = nbttagcompound.getLong("UUIDMost");
@@ -129,7 +131,7 @@ public class WorldMap extends WorldMapBase {
             }
         }
         // CraftBukkit end
-        nbttagcompound.setInt("dimension", this.map);
+        nbttagcompound.setInt("dimension", this.map); // Forge
         nbttagcompound.setInt("xCenter", this.centerX);
         nbttagcompound.setInt("zCenter", this.centerZ);
         nbttagcompound.setByte("scale", this.scale);

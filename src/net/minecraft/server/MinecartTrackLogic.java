@@ -18,7 +18,7 @@ public class MinecartTrackLogic
     private final boolean f;
     private List g;
     final BlockMinecartTrack a;
-    private final boolean canMakeSlopes;
+    private final boolean canMakeSlopes; // Forge
 
     public MinecartTrackLogic(BlockMinecartTrack var1, World var2, int var3, int var4, int var5)
     {
@@ -29,11 +29,13 @@ public class MinecartTrackLogic
         this.d = var4;
         this.e = var5;
         int var6 = var2.getTypeId(var3, var4, var5);
+        // Forge start
         BlockMinecartTrack var7 = (BlockMinecartTrack)Block.byId[var6];
         int var8 = var7.getBasicRailMetadata(var2, (EntityMinecart)null, var3, var4, var5);
         this.f = !var7.isFlexibleRail(var2, var3, var4, var5);
         this.canMakeSlopes = var7.canMakeSlopes(var2, var3, var4, var5);
         this.a(var8);
+        // Forge end
     }
 
     private void a(int var1)
@@ -259,7 +261,7 @@ public class MinecartTrackLogic
             }
         }
 
-        if (var6 == 0 && this.canMakeSlopes)
+        if (var6 == 0 && this.canMakeSlopes) // Forge
         {
             if (BlockMinecartTrack.e_(this.b, this.c, this.d + 1, this.e - 1))
             {
@@ -272,7 +274,7 @@ public class MinecartTrackLogic
             }
         }
 
-        if (var6 == 1 && this.canMakeSlopes)
+        if (var6 == 1 && this.canMakeSlopes) // Forge
         {
             if (BlockMinecartTrack.e_(this.b, this.c + 1, this.d + 1, this.e))
             {
@@ -423,7 +425,7 @@ public class MinecartTrackLogic
             }
         }
 
-        if (var7 == 0 && this.canMakeSlopes)
+        if (var7 == 0 && this.canMakeSlopes) // Forge
         {
             if (BlockMinecartTrack.e_(this.b, this.c, this.d + 1, this.e - 1))
             {
@@ -436,7 +438,7 @@ public class MinecartTrackLogic
             }
         }
 
-        if (var7 == 1 && this.canMakeSlopes)
+        if (var7 == 1 && this.canMakeSlopes) // Forge
         {
             if (BlockMinecartTrack.e_(this.b, this.c + 1, this.d + 1, this.e))
             {

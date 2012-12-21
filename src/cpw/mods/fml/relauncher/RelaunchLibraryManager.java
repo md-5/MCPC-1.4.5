@@ -126,18 +126,18 @@ public class RelaunchLibraryManager
                     String targFileName = libName.lastIndexOf('/')>=0 ? libName.substring(libName.lastIndexOf('/')) : libName;
                     String checksum = lib.getHashes()[i];
                     File libFile = new File(libDir, targFileName);
-                    
                     if (!libFile.exists())
                     {
                         try
                         {
-                        	// MCPC
+                        	// MCPC start
                         	if (libName == "guava-12.0.1.jar")
                         	{
                         		downloadFile(libFile, lib.getMCPCRootURL(), libName, checksum);
                         		download = true;
                         	}
                         	else {
+                                // MCPC end
                         		downloadFile(libFile, lib.getRootURL(), libName, checksum);
                         		download = true;
                         	}
@@ -165,7 +165,7 @@ public class RelaunchLibraryManager
                             String fileChecksum = generateChecksum(mappedFile);
                             fis.close();
                             
-                            // MCPC
+                            // MCPC start
                             // check if original guava 12 jar exists and if so force a redownload
                             if (fileChecksum.equals("b8e78b9af7bf45900e14c6f958486b6ca682195f"))
                             {
@@ -183,6 +183,7 @@ public class RelaunchLibraryManager
                             	downloadFile(libFile, lib.getMCPCRootURL(), libName, checksum);
                         		download = true;
                             }
+                            // MCPC end
                             // bad checksum and I did not download this file
                             else if (!checksum.equals(fileChecksum))
                             {
@@ -607,10 +608,12 @@ public class RelaunchLibraryManager
             return null;
         }
     }
-    
+
+    // MCPC start
     public static void unmap(MappedByteBuffer buffer)
     {
        sun.misc.Cleaner cleaner = ((DirectBuffer) buffer).cleaner();
        cleaner.clean();
     }
+    // MCPC end
 }

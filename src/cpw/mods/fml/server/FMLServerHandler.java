@@ -14,7 +14,11 @@ package cpw.mods.fml.server;
 
 import java.util.List;
 
+import mcpc.com.google.common.collect.ImmutableList;
+import mcpc.com.google.common.collect.MapDifference;
+
 import net.minecraft.server.Entity;
+import net.minecraft.server.INetworkManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.NetHandler;
 import net.minecraft.server.Packet;
@@ -29,8 +33,10 @@ import cpw.mods.fml.common.network.EntitySpawnAdjustmentPacket;
 import cpw.mods.fml.common.network.EntitySpawnPacket;
 import cpw.mods.fml.common.network.ModMissingPacket;
 import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
+import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.ItemData;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import mcpc.com.google.common.collect.ImmutableList;
 
 /**
  * Handles primary communication from hooked code into the system
@@ -73,7 +79,6 @@ public class FMLServerHandler implements IFMLSidedHandler
      *
      * @param minecraftServer
      */
-    @Override
     public void beginServerLoading(MinecraftServer minecraftServer)
     {
         server = minecraftServer;
@@ -84,11 +89,11 @@ public class FMLServerHandler implements IFMLSidedHandler
     /**
      * Called a bit later on during server initialization to finish loading mods
      */
-    @Override
     public void finishServerLoading()
     {
         Loader.instance().initializeMods();
         LanguageRegistry.reloadLanguageTable();
+        GameData.initializeServerGate(1);
     }
 
     @Override
@@ -100,7 +105,6 @@ public class FMLServerHandler implements IFMLSidedHandler
     /**
      * Get the server instance
      */
-    @Override
     public MinecraftServer getServer()
     {
         return server;
@@ -120,7 +124,7 @@ public class FMLServerHandler implements IFMLSidedHandler
     @Override
     public List<String> getAdditionalBrandingInformation()
     {
-    	return ImmutableList.<String> of();
+        return ImmutableList.<String>of();
     }
 
     /* (non-Javadoc)
@@ -174,5 +178,16 @@ public class FMLServerHandler implements IFMLSidedHandler
     public byte getClientCompatibilityLevel()
     {
         return 0;
+    }
+
+    @Override
+    public boolean shouldServerShouldBeKilledQuietly()
+    {
+        return false;
+    }
+    @Override
+    public void disconnectIDMismatch(MapDifference<Integer, ItemData> s, NetHandler handler, INetworkManager mgr)
+    {
+
     }
 }

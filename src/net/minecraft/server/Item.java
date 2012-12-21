@@ -2,6 +2,8 @@ package net.minecraft.server;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.common.registry.GameData;
+
 import java.util.List;
 import java.util.Random;
 import net.minecraft.server.Block;
@@ -242,6 +244,8 @@ public class Item {
    private Item craftingResult = null;
    private String cl = null;
    private String name;
+   
+   /** FORGE: To disable repair recipes. */
    protected boolean canRepair = true;
    public boolean isDefaultTexture = true;
    private String currentTexture = "/gui/items.png";
@@ -249,21 +253,25 @@ public class Item {
    protected Item(int var1) {
       this.id = 256 + var1;
       if(byId[256 + var1] != null) {
-         System.out.println("CONFLICT @ " + var1 + " item slot already occupied by " + byId[256 + var1] + " while adding " + this);
+         System.out.println("CONFLICT @ " + var1 + " item slot already occupied by " + byId[256 + var1] + " while adding " + this); // Forge
       }
 
       byId[256 + var1] = this;
       
+      GameData.newItemAdded(this); // Forge
+      
+      // MCPC
       /* 
        * This is required for mods that use custom materials or else plugins such as ModifyWorld will receive NPE's 
        * when looking up the custom material name.
        */
       org.bukkit.Material.addMaterial(256 + var1);
-      
+      // Forge start
       if (!(this instanceof ItemBlock))
       {
           this.isDefaultTexture = "/gui/items.png".equals(this.getTextureFile());
       }
+      // Forge end
    }
 
    public Item c(int var1) {
@@ -453,10 +461,12 @@ public class Item {
       float var18 = var15 * var16;
       float var20 = var14 * var16;
       double var21 = 5.0D;
+      // Forge start
       if (var2 instanceof EntityPlayer)
       {
           var21 = ((EntityPlayer)var2).itemInWorldManager.getBlockReachDistance();
       }
+      // Forge end
       Vec3D var23 = var13.add((double)var18 * var21, (double)var17 * var21, (double)var20 * var21);
       return var1.rayTrace(var13, var23, var3, !var3);
    }
@@ -478,6 +488,7 @@ public class Item {
       return false;
    }
 
+   /* =========================================================== FORGE START ===============================================================*/
      /**
      * Called when a player drops the item into the world,
      * returning false from this will prevent the item from
@@ -685,7 +696,7 @@ public class Item {
     {
         return -1; //-1 will default to the old lookups.
     }
-
+    /* =========================================================== FORGE END ===============================================================*/
    static {
       StatisticList.c();
    }

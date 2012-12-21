@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -143,8 +144,8 @@ public class FMLRelaunchLog
 
         if (useOnlyThisLogger)
         {
-        		stdOut.setParent(log.myLog);
-        		stdErr.setParent(log.myLog);
+        stdOut.setParent(log.myLog);
+        stdErr.setParent(log.myLog);
         }
         
         FMLLogFormatter formatter = new FMLLogFormatter();
@@ -173,8 +174,8 @@ public class FMLRelaunchLog
         errCache = System.err;
 
         if(useOnlyThisLogger){
-		        System.setOut(new PrintStream(new LoggingOutStream(stdOut), true));
-		        System.setErr(new PrintStream(new LoggingOutStream(stdErr), true));
+        System.setOut(new PrintStream(new LoggingOutStream(stdOut), true));
+        System.setErr(new PrintStream(new LoggingOutStream(stdErr), true));
         }
 
         // Reset global logging to shut up other logging sources (thanks guava!)

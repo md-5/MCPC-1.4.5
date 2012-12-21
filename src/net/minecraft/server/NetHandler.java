@@ -422,7 +422,9 @@ public abstract class NetHandler
         return false;
     }
 
+    // Forge start
     public abstract void handleVanilla250Packet(Packet250CustomPayload var1);
 
     public abstract EntityHuman getPlayerH();
+    // Forge end
 }

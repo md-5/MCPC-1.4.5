@@ -32,7 +32,7 @@ public abstract class Packet implements org.bukkit.event.server.Packet {
     private int packetID;
 
     public Packet() {
-        packetID = ((Integer) a.get(this.getClass())).intValue();
+            packetID = ((Integer) a.get(this.getClass())).intValue();
     }
     // CraftBukkit end
 
@@ -347,7 +347,7 @@ public abstract class Packet implements org.bukkit.event.server.Packet {
         a(107, true, true, Packet107SetCreativeSlot.class);
         a(108, false, true, Packet108ButtonClick.class);
         a(130, true, true, Packet130UpdateSign.class);
-        a(131, true, true, Packet131ItemData.class); // forge - true
+        a(131, true, true, Packet131ItemData.class); // Forge - true
         a(132, true, false, Packet132TileEntityData.class);
         a(200, true, false, Packet200Statistic.class);
         a(201, true, false, Packet201PlayerInfo.class);

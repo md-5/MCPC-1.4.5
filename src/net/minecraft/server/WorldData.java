@@ -31,7 +31,7 @@ public class WorldData
 	private boolean allowCommands;
 	private boolean initialized;
 	private GameRules gameRules = new GameRules();
-	private Map<String,NBTBase> additionalProperties;
+	private Map<String,NBTBase> additionalProperties; // Forge
 
 	protected WorldData()
 	{
@@ -354,6 +354,7 @@ public class WorldData
       var1.a("Level game mode", (Callable)(new CrashReportLevelGameMode(this)));
    }
 
+    // Forge start
 	/**
 	 * Allow access to additional mod specific world based properties
 	 * Used by FML to store mod list associated with a world, and maybe an id map
@@ -373,5 +374,5 @@ public class WorldData
 	{
 		return this.additionalProperties!=null? this.additionalProperties.get(additionalProperty) : null;
 	}
-
+	// Forge end
 }

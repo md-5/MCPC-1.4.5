@@ -5,7 +5,7 @@ import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
 
-public class ItemSeeds extends Item implements IPlantable {
+public class ItemSeeds extends Item implements IPlantable { // Forge
 
     private int id;
     private int b;
@@ -22,9 +22,9 @@ public class ItemSeeds extends Item implements IPlantable {
             return false;
         } else if (entityhuman.e(i, j, k) && entityhuman.e(i, j + 1, k)) {
             int i1 = world.getTypeId(i, j, k);
-            Block bl = Block.byId[i1];
+            Block bl = Block.byId[i1]; // Forge
 
-            if (bl != null && bl.canSustainPlant(world, i, j, k, ForgeDirection.UP, this) && world.isEmpty(i, j + 1, k))
+            if (bl != null && bl.canSustainPlant(world, i, j, k, ForgeDirection.UP, this) && world.isEmpty(i, j + 1, k)) // Forge
             {
                 CraftBlockState blockState = CraftBlockState.getBlockState(world, i, j + 1, k); // CraftBukkit
 
@@ -49,7 +49,7 @@ public class ItemSeeds extends Item implements IPlantable {
         }
     }
     
-
+    // Forge start
     public EnumPlantType getPlantType(World var1, int var2, int var3, int var4)
     {
         return this.id == Block.NETHER_WART.id ? EnumPlantType.Nether : EnumPlantType.Crop;
@@ -64,4 +64,5 @@ public class ItemSeeds extends Item implements IPlantable {
     {
         return 0;
     }
+    // Forge end
 }

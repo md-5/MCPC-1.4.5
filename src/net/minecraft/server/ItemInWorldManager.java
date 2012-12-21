@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class ItemInWorldManager {
 
+	/** Forge reach distance */
 	private double blockReachDistance = 5.0D;
 	
     public World world;
@@ -117,9 +118,9 @@ public class ItemInWorldManager {
 
     public void dig(int i, int j, int k, int l) {
         // this.world.douseFire((EntityHuman) null, i, j, k, l); // CraftBukkit - moved down
-        // CraftBukkit
+        // Forge, CraftBukkit
         PlayerInteractEvent event = CraftEventFactory.callPlayerInteractEvent(this.player, Action.LEFT_CLICK_BLOCK, i, j, k, l, this.player.inventory.getItemInHand());
-
+        ForgeEventFactory.onPlayerInteract(this.player, net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, i, j, k, l); // Forge
         if (!this.gamemode.isAdventure() || this.player.f(i, j, k)) {
             // CraftBukkit start
             if (event.isCancelled()) {
@@ -134,14 +135,6 @@ public class ItemInWorldManager {
             }
             // CraftBukkit end
             
-            net.minecraftforge.event.entity.player.PlayerInteractEvent var5 = ForgeEventFactory.onPlayerInteract(this.player, net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, i, j, k, l);
-
-            if (var5.isCanceled())
-            {
-                this.player.netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
-                return;
-            }
-            
             if (this.isCreative()) {
                 if (!this.world.douseFire((EntityHuman) null, i, j, k, l)) {
                     this.breakBlock(i, j, k);
@@ -155,12 +148,6 @@ public class ItemInWorldManager {
                 Block var8 = Block.byId[i1];
                 if (var8 == null)
                 	return;
-                
-                if (var5.useItem == Result.DENY && f >= 1.0F)
-                {
-                	this.player.netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
-                    return;
-                }
 
                 if (event.useInteractedBlock() == Event.Result.DENY) {
                     // If we denied a door from opening, we need to send a correcting update to the client, as it already opened the door.
@@ -172,13 +159,11 @@ public class ItemInWorldManager {
                     } else if (i1 == Block.TRAP_DOOR.id) {
                         ((EntityPlayer) this.player).netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
                     }
-                } else if ((var8 != null && var5.useBlock != Result.DENY) || i1 > 0) {
-                	var8.attack(this.world, i, j, k, this.player);
+                } else if (i1 > 0) {
+                	Block.byId[i1].attack(this.world, i, j, k, this.player);
                     // Allow fire punching to be blocked
                     this.world.douseFire((EntityHuman) null, i, j, k, l);
                 }
-                else
-                	this.player.netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
 
                 // Handle hitting a block
                 if (i1 > 0) {
@@ -439,6 +424,7 @@ public class ItemInWorldManager {
             else
             {
                 int i1 = var2.getTypeId(var4, var5, var6);
+                // Forge start
                 Block var14 = Block.byId[i1];
                 boolean result = false;
 
@@ -455,7 +441,7 @@ public class ItemInWorldManager {
                         result = var11.useItem != Result.ALLOW;
                     }
                 }
-
+                // Forge end
                 if (!result)
                 {
                     // CraftBukkit start - Interact
@@ -493,7 +479,7 @@ public class ItemInWorldManager {
                     }
                  // CraftBukkit end
                     if (var3 != null && var3.count <= 0)
-                        ForgeEventFactory.onPlayerDestroyItem(this.player, var3);
+                        ForgeEventFactory.onPlayerDestroyItem(this.player, var3); // Forge
                 }
 
                 return result;
@@ -505,7 +491,7 @@ public class ItemInWorldManager {
         this.world = worldserver;
     }
     
-
+    // Forge start
     public double getBlockReachDistance()
     {
         return this.blockReachDistance;
@@ -515,4 +501,5 @@ public class ItemInWorldManager {
     {
         this.blockReachDistance = var1;
     }
+    // Forge end
 }

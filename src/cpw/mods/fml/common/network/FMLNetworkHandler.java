@@ -2,8 +2,6 @@ package cpw.mods.fml.common.network;
 
 import static cpw.mods.fml.common.network.FMLPacket.Type.MOD_LIST_REQUEST;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -12,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -51,7 +48,7 @@ import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
 public class FMLNetworkHandler
 {
     private static final int FML_HASH = Hashing.murmur3_32().hashString("FML").asInt();
-    private static final int PROTOCOL_VERSION = 0x1;
+    private static final int PROTOCOL_VERSION = 0x2;
     private static final FMLNetworkHandler INSTANCE = new FMLNetworkHandler();
 
     // List of states for connections from clients to server
@@ -64,7 +61,7 @@ public class FMLNetworkHandler
     private Map<ModContainer, NetworkModHandler> networkModHandlers = Maps.newHashMap();
 
     private Map<Integer, NetworkModHandler> networkIdLookup = Maps.newHashMap();
-
+    
     public static void handlePacket250Packet(Packet250CustomPayload packet, INetworkManager network, NetHandler handler)
     {
         String target = packet.tag;
@@ -89,15 +86,12 @@ public class FMLNetworkHandler
 
     private void handleFMLPacket(Packet250CustomPayload packet, INetworkManager network, NetHandler netHandler)
     {
-        FMLPacket pkt = FMLPacket.readPacket(packet.data);
-        DataInputStream dataStream = new DataInputStream(new ByteArrayInputStream(packet.data));
-        try {
-        	int packetId = dataStream.readInt();
+        FMLPacket pkt = FMLPacket.readPacket(network, packet.data);
+        // Part of an incomplete multipart packet
+        if (pkt == null)
+        {
+            return;
         }
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
         String userName = "";
         if (netHandler instanceof NetLoginHandler)
         {
@@ -111,7 +105,7 @@ public class FMLNetworkHandler
                 userName = pl.getName();
             }
         }
-        if (netHandler != null)
+
         	pkt.execute(network, this, netHandler, userName);
     }
 
@@ -150,7 +144,8 @@ public class FMLNetworkHandler
                 loginStates.remove(netLoginHandler);
                 return;
             }
-            // this deals with the vanillaCompatibility flag in Packet1Login
+            // MCPC - this deals with the vanillaCompatibility flag in Packet1Login
+            // The vanilla side wanted to kick
             if (!handleVanillaLoginKick(netLoginHandler, server, address, userName))
             {
                 loginStates.remove(netLoginHandler);

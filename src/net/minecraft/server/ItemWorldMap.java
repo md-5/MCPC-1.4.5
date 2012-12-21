@@ -71,7 +71,7 @@ public class ItemWorldMap extends ItemWorldMapBase {
                             boolean flag = k2 * k2 + l2 * l2 > (j1 - 2) * (j1 - 2);
                             int i3 = (j / i + k1 - short1 / 2) * i;
                             int j3 = (k / i + j2 - short2 / 2) * i;
-                            int[] aint = new int[Block.byId.length];
+                            int[] aint = new int[Block.byId.length]; // Forge
                             Chunk chunk = world.getChunkAtWorldCoords(i3, j3);
 
                             if (!chunk.isEmpty()) {

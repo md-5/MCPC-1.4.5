@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.INetworkManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.CrashReport;
 import net.minecraft.server.CrashReportCategory;
@@ -38,20 +39,22 @@ import net.minecraft.server.ThreadServerApplication;
 import net.minecraft.server.World;
 import net.minecraft.server.WorldData;
 
-
-import cpw.mods.fml.common.network.EntitySpawnAdjustmentPacket;
-import cpw.mods.fml.common.network.EntitySpawnPacket;
-import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.server.FMLServerHandler;
 import mcpc.com.google.common.base.Objects;
 import mcpc.com.google.common.base.Strings;
 import mcpc.com.google.common.collect.ImmutableList;
 import mcpc.com.google.common.collect.Lists;
+import mcpc.com.google.common.collect.MapDifference;
 import mcpc.com.google.common.collect.MapMaker;
 import mcpc.com.google.common.collect.Maps;
 import mcpc.com.google.common.collect.Sets;
 import mcpc.com.google.common.collect.ImmutableList.Builder;
+
+import cpw.mods.fml.common.network.EntitySpawnAdjustmentPacket;
+import cpw.mods.fml.common.network.EntitySpawnPacket;
+import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
+import cpw.mods.fml.common.registry.ItemData;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.server.FMLServerHandler;
 
 
 /**
@@ -447,5 +450,15 @@ public class FMLCommonHandler
                 }
             }
         }
+    }
+
+    public boolean shouldServerBeKilledQuietly()
+    {
+        return sidedDelegate.shouldServerShouldBeKilledQuietly();
+    }
+
+    public void disconnectIDMismatch(MapDifference<Integer, ItemData> serverDifference, NetHandler toKill, INetworkManager network)
+    {
+        sidedDelegate.disconnectIDMismatch(serverDifference, toKill, network);
     }
 }

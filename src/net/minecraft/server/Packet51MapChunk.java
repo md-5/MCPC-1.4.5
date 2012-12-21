@@ -66,7 +66,8 @@ public class Packet51MapChunk extends Packet {
         }
 
         j = 12288 * i;
-        int var4 = 0;
+        // Forge start
+        int var4 = 0; //BugFix: MC does not read the MSB array from the packet properly, causing issues for servers that use blocks > 256
 
         for (int var5 = 0; var5 < 16; ++var5)
         {
@@ -74,7 +75,7 @@ public class Packet51MapChunk extends Packet {
         }
 
         j += 2048 * var4;
-        
+        // Forge end
         if (this.e) {
             j += 256;
         }

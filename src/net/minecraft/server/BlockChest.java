@@ -1,10 +1,12 @@
 package net.minecraft.server;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
 import java.util.Iterator;
 import java.util.Random;
+
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraftforge.common.ForgeDirection;
+import static net.minecraftforge.common.ForgeDirection.*;
 
 public class BlockChest extends BlockContainer
 {
@@ -395,7 +397,7 @@ public class BlockChest extends BlockContainer
         {
             return true;
         }
-        else if (var1.isBlockSolidOnSide(var2, var3 + 1, var4, ForgeDirection.DOWN))
+        else if (var1.isBlockSolidOnSide(var2, var3 + 1, var4, DOWN)) // Forge
         {
             return true;
         }
@@ -403,22 +405,24 @@ public class BlockChest extends BlockContainer
         {
             return true;
         }
-        else if (var1.getTypeId(var2 - 1, var3, var4) == this.id && (var1.isBlockSolidOnSide(var2 - 1, var3 + 1, var4, ForgeDirection.DOWN) || n(var1, var2 - 1, var3, var4)))
+        // Forge start
+        else if (var1.getTypeId(var2 - 1, var3, var4) == this.id && (var1.isBlockSolidOnSide(var2 - 1, var3 + 1, var4, DOWN) || n(var1, var2 - 1, var3, var4)))
         {
             return true;
         }
-        else if (var1.getTypeId(var2 + 1, var3, var4) == this.id && (var1.isBlockSolidOnSide(var2 + 1, var3 + 1, var4, ForgeDirection.DOWN) || n(var1, var2 + 1, var3, var4)))
+        else if (var1.getTypeId(var2 + 1, var3, var4) == this.id && (var1.isBlockSolidOnSide(var2 + 1, var3 + 1, var4, DOWN) || n(var1, var2 + 1, var3, var4)))
         {
             return true;
         }
-        else if (var1.getTypeId(var2, var3, var4 - 1) == this.id && (var1.isBlockSolidOnSide(var2, var3 + 1, var4 - 1, ForgeDirection.DOWN) || n(var1, var2, var3, var4 - 1)))
+        else if (var1.getTypeId(var2, var3, var4 - 1) == this.id && (var1.isBlockSolidOnSide(var2, var3 + 1, var4 - 1, DOWN) || n(var1, var2, var3, var4 - 1)))
         {
             return true;
         }
-        else if (var1.getTypeId(var2, var3, var4 + 1) == this.id && (var1.isBlockSolidOnSide(var2, var3 + 1, var4 + 1, ForgeDirection.DOWN) || n(var1, var2, var3, var4 + 1)))
+        else if (var1.getTypeId(var2, var3, var4 + 1) == this.id && (var1.isBlockSolidOnSide(var2, var3 + 1, var4 + 1, DOWN) || n(var1, var2, var3, var4 + 1)))
         {
             return true;
         }
+        // Forge end
         else
         {
             if (var1.getTypeId(var2 - 1, var3, var4) == this.id)

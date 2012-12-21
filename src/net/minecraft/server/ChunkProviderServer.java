@@ -250,7 +250,7 @@ public class ChunkProviderServer implements IChunkProvider {
                 this.world.getServer().getPluginManager().callEvent(new org.bukkit.event.world.ChunkPopulateEvent(chunk.bukkitChunk));
                 // CraftBukkit end
 
-                GameRegistry.generateWorld(i, j, this.world, this.chunkProvider, ichunkprovider);
+                GameRegistry.generateWorld(i, j, this.world, this.chunkProvider, ichunkprovider); // Forge
                 
                 chunk.e();
             }

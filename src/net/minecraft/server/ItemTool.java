@@ -108,8 +108,12 @@ public class ItemTool extends Item
         return this.b.f() == var2.id ? true : super.a(var1, var2);
     }
 
+    // Forge start
+    /** FORGE: Overridden to allow custom tool effectiveness */
+    @Override
     public float getStrVsBlock(ItemStack var1, Block var2, int var3)
     {
         return ForgeHooks.isToolEffective(var1, var2, var3) ? this.a : this.getDestroySpeed(var1, var2);
     }
+    // Forge end
 }

@@ -88,10 +88,12 @@ public class BlockSoil extends Block {
             for (int var7 = var4 - var5; var7 <= var4 + var5; ++var7)
             {
                 int var8 = var1.getTypeId(var6, var3 + 1, var7);
-                Block var9 = byId[var8];
+                // Forge start
+                Block plant = byId[var8];
 
-                if (var9 instanceof IPlantable && this.canSustainPlant(var1, var2, var3, var4, ForgeDirection.UP, (IPlantable)var9))
+                if (plant instanceof IPlantable && this.canSustainPlant(var1, var2, var3, var4, ForgeDirection.UP, (IPlantable)plant))
                 {
+                	// Forge end
                     return true;
                 }
             }

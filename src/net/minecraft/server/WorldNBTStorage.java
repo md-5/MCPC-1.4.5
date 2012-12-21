@@ -88,7 +88,7 @@ public class WorldNBTStorage implements IDataManager, PlayerFileData {
     public WorldData getWorldData()
     {
         File var1 = new File(this.baseDir, "level.dat");
-        WorldData var4 = null;
+        WorldData worldInfo = null;
         NBTTagCompound var2;
         NBTTagCompound var3;
 
@@ -98,12 +98,20 @@ public class WorldNBTStorage implements IDataManager, PlayerFileData {
             {
                 var2 = NBTCompressedStreamTools.a(new FileInputStream(var1));
                 var3 = var2.getCompound("Data");
-                var4 = new WorldData(var3);
-                FMLCommonHandler.instance().handleWorldDataLoad(this, var4, var2);
-                return var4;
+                // Forge start
+                worldInfo = new WorldData(var3);
+                FMLCommonHandler.instance().handleWorldDataLoad(this, worldInfo, var2);
+                return worldInfo;
+                // Forge end
             }
             catch (Exception var7)
             {
+            	// Forge start
+            	if (FMLCommonHandler.instance().shouldServerBeKilledQuietly())
+            	{
+            		throw (RuntimeException)var7;
+            	}
+            	// Forge end
                 var7.printStackTrace();
             }
         }
@@ -116,9 +124,9 @@ public class WorldNBTStorage implements IDataManager, PlayerFileData {
             {
                 var2 = NBTCompressedStreamTools.a(new FileInputStream(var1));
                 var3 = var2.getCompound("Data");
-                var4 = new WorldData(var3);
-                FMLCommonHandler.instance().handleWorldDataLoad(this, var4, var2);
-                return var4;
+                worldInfo = new WorldData(var3);
+                FMLCommonHandler.instance().handleWorldDataLoad(this, worldInfo, var2);
+                return worldInfo;
             }
             catch (Exception var6)
             {
@@ -134,7 +142,7 @@ public class WorldNBTStorage implements IDataManager, PlayerFileData {
         NBTTagCompound nbttagcompound2 = new NBTTagCompound();
 
         nbttagcompound2.set("Data", nbttagcompound1);
-        FMLCommonHandler.instance().handleWorldDataSave(this, worlddata, nbttagcompound2);
+        FMLCommonHandler.instance().handleWorldDataSave(this, worlddata, nbttagcompound2); // Forge
 
         try {
             File file1 = new File(this.baseDir, "level.dat_new");
@@ -165,7 +173,7 @@ public class WorldNBTStorage implements IDataManager, PlayerFileData {
         NBTTagCompound nbttagcompound1 = new NBTTagCompound();
 
         nbttagcompound1.set("Data", nbttagcompound);
-        FMLCommonHandler.instance().handleWorldDataSave(this, worlddata, nbttagcompound1);
+        FMLCommonHandler.instance().handleWorldDataSave(this, worlddata, nbttagcompound1); // Forge
 
         try {
             File file1 = new File(this.baseDir, "level.dat_new");

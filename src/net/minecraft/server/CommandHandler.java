@@ -41,18 +41,18 @@ public class CommandHandler implements ICommandHandler
 
             if (var5.b(var1))
             {
-                CommandEvent var7 = new CommandEvent(var5, var1, var3);
-
-                if (MinecraftForge.EVENT_BUS.post(var7))
+            	// Forge start
+                CommandEvent event = new CommandEvent(var5, var1, var3);
+                if (MinecraftForge.EVENT_BUS.post(event))
                 {
-                    if (var7.exception != null)
+                    if (event.exception != null)
                     {
-                        throw var7.exception;
+                        throw event.exception;
                     }
 
                     return;
                 }
-
+                // Forge end
                 if (var6 > -1)
                 {
                     EntityPlayer[] var8 = PlayerSelector.getPlayers(var1, var3[var6]);

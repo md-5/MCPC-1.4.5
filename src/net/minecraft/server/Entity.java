@@ -105,9 +105,10 @@ public abstract class Entity {
     public UUID uniqueId = UUID.randomUUID(); // CraftBukkit
     public boolean valid = false; // CraftBukkit
     
-    private NBTTagCompound customEntityData;
-    public boolean captureDrops = false;
-    public ArrayList capturedDrops = new ArrayList();
+    /** Forge: Used to store custom data for each entity. */
+    private NBTTagCompound customEntityData; // Forge
+    public boolean captureDrops = false; // Forge
+    public ArrayList<EntityItem> capturedDrops = new ArrayList<EntityItem>(); // Forge
 
     public Entity(World world) {
         this.id = entityCount++;
@@ -347,7 +348,7 @@ public abstract class Entity {
 
         if (!this.world.isStatic) {
             this.a(0, this.fireTicks > 0);
-            this.a(2, this.vehicle != null);
+            this.a(2, this.vehicle != null && vehicle.shouldRiderSit()); // Forge
         }
 
         this.justCreated = false;
@@ -1106,12 +1107,12 @@ public abstract class Entity {
         nbttagcompound.setLong("UUIDLeast", this.uniqueId.getLeastSignificantBits());
         nbttagcompound.setLong("UUIDMost", this.uniqueId.getMostSignificantBits());
         // CraftBukkit end
-        
+        // Forge start
         if (this.customEntityData != null)
         {
         	nbttagcompound.setCompound("ForgeData", this.customEntityData);
         }
-        
+        // Forge end
         this.b(nbttagcompound);
         } catch (Throwable throwable) {
             CrashReport crashreport = CrashReport.a(throwable, "Saving entity NBT");
@@ -1169,12 +1170,12 @@ public abstract class Entity {
         // CraftBukkit end
 
         this.b(this.yaw, this.pitch);
-        
+        // Forge start
         if (nbttagcompound.hasKey("ForgeData"))
         {
             this.customEntityData = nbttagcompound.getCompound("ForgeData");
         }
-        
+        // Forge end
         this.a(nbttagcompound);
 
         // CraftBukkit start - exempt Vehicles from notch's sanity check
@@ -1273,6 +1274,7 @@ public abstract class Entity {
         EntityItem entityitem = new EntityItem(this.world, this.locX, this.locY + (double) f, this.locZ, itemstack);
 
         entityitem.pickupDelay = 10;
+        // Forge start
         if (this.captureDrops)
         {
             this.capturedDrops.add(entityitem);
@@ -1281,6 +1283,7 @@ public abstract class Entity {
         {
             this.world.addEntity(entityitem);
         }
+        // Forge end
         return entityitem;
     }
 
@@ -1535,7 +1538,7 @@ public abstract class Entity {
     
     public boolean isRiding()     
     {
-        return this.vehicle != null && this.vehicle.shouldRiderSit() || this.e(2);
+        return this.vehicle != null && this.vehicle.shouldRiderSit() || this.e(2); // Forge
     }
 
     public boolean isSneaking() {
@@ -1791,7 +1794,7 @@ public abstract class Entity {
     
     public float a(Explosion var1, Block var2, int var3, int var4, int var5)
     {
-        return var2.getExplosionResistance(this, this.world, var3, var4, var5, this.locX, this.locY + (double)this.getHeadHeight(), this.locZ);
+        return var2.getExplosionResistance(this, this.world, var3, var4, var5, this.locX, this.locY + (double)this.getHeadHeight(), this.locZ); // Forge
     }
 
     public int as() {
@@ -1806,7 +1809,21 @@ public abstract class Entity {
         return false;
     }
     
-
+    public void a(CrashReportSystemDetails crashreportsystemdetails) {
+        crashreportsystemdetails.a("Entity Type", (Callable) (new CrashReportEntityType(this)));
+        crashreportsystemdetails.a("Entity ID", Integer.valueOf(this.id));
+        crashreportsystemdetails.a("Name", this.getLocalizedName());
+        crashreportsystemdetails.a("Exact location", String.format("%.2f, %.2f, %.2f", new Object[] { Double.valueOf(this.locX), Double.valueOf(this.locY), Double.valueOf(this.locZ)}));
+        crashreportsystemdetails.a("Block location", CrashReportSystemDetails.a(MathHelper.floor(this.locX), MathHelper.floor(this.locY), MathHelper.floor(this.locZ)));
+        crashreportsystemdetails.a("Momentum", String.format("%.2f, %.2f, %.2f", new Object[] { Double.valueOf(this.motX), Double.valueOf(this.motY), Double.valueOf(this.motZ)}));
+    }
+    
+    /* ================================== Forge Start =====================================*/
+    /**
+     * Returns a NBTTagCompound that can be used to store custom data for this entity.
+     * It will be written, and read from disc, so it persists over world saves.
+     * @return A NBTTagCompound
+     */
     public NBTTagCompound getEntityData()
     {
         if (this.customEntityData == null)
@@ -1817,12 +1834,22 @@ public abstract class Entity {
         return this.customEntityData;
     }
 
+    /**
+     * Used in model rendering to determine if the entity riding this entity should be in the 'sitting' position.
+     * @return false to prevent an entity that is mounted to this entity from displaying the 'sitting' animation.
+     */
     public boolean shouldRiderSit()
     {
         return true;
     }
 
-    public ItemStack getPickedResult(MovingObjectPosition var1)
+    /**
+     * Called when a user uses the creative pick block button on this entity.
+     *
+     * @param target The full target the player is looking at
+     * @return A ItemStack to add to the player's inventory, Null if nothing should be added.
+     */
+    public ItemStack getPickedResult(MovingObjectPosition target)
     {
         if (this instanceof EntityPainting)
         {
@@ -1860,13 +1887,5 @@ public abstract class Entity {
             this.uniqueId = UUID.randomUUID();
         }
     }
-
-    public void a(CrashReportSystemDetails crashreportsystemdetails) {
-        crashreportsystemdetails.a("Entity Type", (Callable) (new CrashReportEntityType(this)));
-        crashreportsystemdetails.a("Entity ID", Integer.valueOf(this.id));
-        crashreportsystemdetails.a("Name", this.getLocalizedName());
-        crashreportsystemdetails.a("Exact location", String.format("%.2f, %.2f, %.2f", new Object[] { Double.valueOf(this.locX), Double.valueOf(this.locY), Double.valueOf(this.locZ)}));
-        crashreportsystemdetails.a("Block location", CrashReportSystemDetails.a(MathHelper.floor(this.locX), MathHelper.floor(this.locY), MathHelper.floor(this.locZ)));
-        crashreportsystemdetails.a("Momentum", String.format("%.2f, %.2f, %.2f", new Object[] { Double.valueOf(this.motX), Double.valueOf(this.motY), Double.valueOf(this.motZ)}));
-    }
+    /* ================================== Forge End =====================================*/
 }

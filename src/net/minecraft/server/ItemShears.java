@@ -15,10 +15,9 @@ public class ItemShears extends Item
     }
 
    public boolean a(ItemStack var1, World var2, int var3, int var4, int var5, int var6, EntityLiving var7) {
-      if(var3 != Block.LEAVES.id && var3 != Block.WEB.id && var3 != Block.LONG_GRASS.id && var3 != Block.VINE.id && var3 != Block.TRIPWIRE.id) {
+      if(var3 != Block.LEAVES.id && var3 != Block.WEB.id && var3 != Block.LONG_GRASS.id && var3 != Block.VINE.id && var3 != Block.TRIPWIRE.id && !(Block.byId[var3] instanceof IShearable)) { // Forge
          return super.a(var1, var2, var3, var4, var5, var6, var7);
       } else {
-         var1.damage(1, var7);
          return true;
       }
    }
@@ -40,9 +39,11 @@ public class ItemShears extends Item
         return var2.id != Block.WEB.id && var2.id != Block.LEAVES.id ? (var2.id == Block.WOOL.id ? 5.0F : super.getDestroySpeed(var1, var2)) : 15.0F;
     }
 
+    // Forge start
     /**
      * Called when a player right clicks a entity with a item.
      */
+    @Override
     public boolean a(ItemStack var1, EntityLiving var2)
     {
         if (var2.world.isStatic)
@@ -77,6 +78,7 @@ public class ItemShears extends Item
         }
     }
 
+    @Override
     public boolean onBlockStartBreak(ItemStack var1, int var2, int var3, int var4, EntityHuman var5)
     {
         if (var5.world.isStatic)
@@ -116,4 +118,5 @@ public class ItemShears extends Item
             return false;
         }
     }
+    // Forge end
 }

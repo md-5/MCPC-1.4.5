@@ -13,10 +13,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
-
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 import mcpc.com.google.common.base.Supplier;
 import mcpc.com.google.common.base.Suppliers;
 import mcpc.com.google.common.cache.Cache;
@@ -41,6 +37,10 @@ import mcpc.com.google.common.collect.Multiset;
 import mcpc.com.google.common.collect.SetMultimap;
 import mcpc.com.google.common.collect.Sets;
 import mcpc.com.google.common.collect.TreeMultiset;
+
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.Chunk;
@@ -605,7 +605,9 @@ public class ForgeChunkManager
         return allowedCount;
     }
 
-    public static int ticketCountAvaliableFor(String username)
+    @Deprecated
+    public static int ticketCountAvaliableFor(String username){ return ticketCountAvailableFor(username); }
+    public static int ticketCountAvailableFor(String username)
     {
         return playerTicketLength - playerTickets.get(username).size();
     }

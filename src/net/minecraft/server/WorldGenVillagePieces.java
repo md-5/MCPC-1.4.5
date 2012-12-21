@@ -20,7 +20,7 @@ public class WorldGenVillagePieces
         var2.add(new WorldGenVillagePieceWeight(WorldGenVillageFarm.class, 3, MathHelper.nextInt(var0, 2 + var1, 4 + var1 * 2)));
         var2.add(new WorldGenVillagePieceWeight(WorldGenVillageBlacksmith.class, 15, MathHelper.nextInt(var0, 0, 1 + var1)));
         var2.add(new WorldGenVillagePieceWeight(WorldGenVillageHouse2.class, 8, MathHelper.nextInt(var0, 0 + var1, 3 + var1 * 2)));
-        VillagerRegistry.addExtraVillageComponents(var2, var0, var1);
+        VillagerRegistry.addExtraVillageComponents(var2, var0, var1); // Forge
         Iterator var3 = var2.iterator();
 
         while (var3.hasNext())
@@ -96,7 +96,7 @@ public class WorldGenVillagePieces
         }
         else
         {
-            var10 = VillagerRegistry.getVillageComponent(var1, var0, var2, var3, var4, var5, var6, var7, var8);
+            var10 = VillagerRegistry.getVillageComponent(var1, var0, var2, var3, var4, var5, var6, var7, var8); // Forge
         }
 
         return (WorldGenVillagePiece)var10;

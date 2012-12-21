@@ -12,16 +12,16 @@ import net.minecraft.server.NetHandler;
 import net.minecraft.server.INetworkManager;
 import net.minecraft.server.Packet250CustomPayload;
 
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 import mcpc.com.google.common.collect.Lists;
 import mcpc.com.google.common.collect.Maps;
 import mcpc.com.google.common.io.ByteArrayDataInput;
 import mcpc.com.google.common.io.ByteArrayDataOutput;
 import mcpc.com.google.common.io.ByteStreams;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 
 public class ModListRequestPacket extends FMLPacket
 {
@@ -109,6 +109,7 @@ public class ModListRequestPacket extends FMLPacket
                 }
             }
         }
+
         FMLLog.fine("The server has compatibility level %d", compatibilityLevel);
         FMLCommonHandler.instance().getSidedDelegate().setClientCompatibilityLevel(compatibilityLevel);
 

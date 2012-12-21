@@ -21,6 +21,7 @@ public class ItemHoe extends Item {
         if (!entityhuman.a(i, j, k, l, itemstack)) {
             return false;
         } else {
+        	// Forge start
             UseHoeEvent var11 = new UseHoeEvent(entityhuman, itemstack, world, i, j, k);
 
             if (MinecraftForge.EVENT_BUS.post(var11))
@@ -32,6 +33,7 @@ public class ItemHoe extends Item {
             	itemstack.damage(1, entityhuman);
                 return true;
             }
+            // Forge end
             else
             {
 	            int i1 = world.getTypeId(i, j, k);

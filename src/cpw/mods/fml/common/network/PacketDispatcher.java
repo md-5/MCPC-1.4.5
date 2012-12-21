@@ -1,10 +1,10 @@
 package cpw.mods.fml.common.network;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.Packet;
 import net.minecraft.server.Packet131ItemData;
 import net.minecraft.server.Packet250CustomPayload;
+import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 

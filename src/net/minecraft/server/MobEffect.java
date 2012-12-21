@@ -16,7 +16,8 @@ public class MobEffect
     private int amplification;
     private boolean splash;
     private boolean ambient;
-    private List curativeItems;
+    /** List of ItemStack that can cure the potion effect **/
+    private List curativeItems; // Forge
 
     public MobEffect(int var1, int var2)
     {
@@ -34,8 +35,10 @@ public class MobEffect
         this.duration = var2;
         this.amplification = var3;
         this.ambient = var4;
+        // Forge start
         this.curativeItems = new ArrayList();
         this.curativeItems.add(new ItemStack(Item.MILK_BUCKET));
+        // Forge end
     }
 
     public MobEffect(MobEffect var1)
@@ -43,7 +46,7 @@ public class MobEffect
         this.effectId = var1.effectId;
         this.duration = var1.duration;
         this.amplification = var1.amplification;
-        this.curativeItems = var1.getCurativeItems();
+        this.curativeItems = var1.getCurativeItems(); // Forge
     }
 
     /**
@@ -90,12 +93,21 @@ public class MobEffect
         return this.amplification;
     }
 
+    /***
+     * Returns a list of curative items for the potion effect
+     * @return The list (ItemStack) of curative items for the potion effect 
+     */
     public List getCurativeItems()
     {
         return this.curativeItems;
     }
 
-    public boolean isCurativeItem(ItemStack var1)
+    /***
+     * Checks the given ItemStack to see if it is in the list of curative items for the potion effect
+     * @param stack The ItemStack being checked against the list of curative items for the potion effect
+     * @return true if the given ItemStack is in the list of curative items for the potion effect, false otherwise
+     */
+    public boolean isCurativeItem(ItemStack stack)
     {
         boolean var2 = false;
         Iterator var3 = this.curativeItems.iterator();
@@ -104,7 +116,7 @@ public class MobEffect
         {
             ItemStack var4 = (ItemStack)var3.next();
 
-            if (var4.doMaterialsMatch(var1))
+            if (var4.doMaterialsMatch(stack))
             {
                 var2 = true;
             }
@@ -113,12 +125,20 @@ public class MobEffect
         return var2;
     }
 
+    /***
+     * Sets the array of curative items for the potion effect 
+     * @param curativeItems The list of ItemStacks being set to the potion effect
+     */
     public void setCurativeItems(List var1)
     {
         this.curativeItems = var1;
     }
 
-    public void addCurativeItem(ItemStack var1)
+    /***
+     * Adds the given stack to list of curative items for the potion effect
+     * @param stack The ItemStack being added to the curative item list
+     */
+    public void addCurativeItem(ItemStack stack)
     {
         boolean var2 = false;
         Iterator var3 = this.curativeItems.iterator();
@@ -127,7 +147,7 @@ public class MobEffect
         {
             ItemStack var4 = (ItemStack)var3.next();
 
-            if (var4.doMaterialsMatch(var1))
+            if (var4.doMaterialsMatch(stack))
             {
                 var2 = true;
             }
@@ -135,7 +155,7 @@ public class MobEffect
 
         if (!var2)
         {
-            this.curativeItems.add(var1);
+            this.curativeItems.add(stack);
         }
     }
 

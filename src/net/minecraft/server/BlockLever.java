@@ -1,6 +1,7 @@
 package net.minecraft.server;
 
 import net.minecraftforge.common.ForgeDirection;
+import static net.minecraftforge.common.ForgeDirection.*;
 import org.bukkit.event.block.BlockRedstoneEvent; // CraftBukkit
 
 public class BlockLever extends Block {
@@ -29,18 +30,32 @@ public class BlockLever extends Block {
     /**
      * checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
      */
-    public boolean canPlace(World var1, int var2, int var3, int var4, int var5)
+    public boolean canPlace(World world, int var2, int var3, int var4, int var5)
     {
-        ForgeDirection var6 = ForgeDirection.getOrientation(var5);
-        return var6 == ForgeDirection.DOWN && var1.isBlockSolidOnSide(var2, var3 + 1, var4, ForgeDirection.DOWN) || var6 == ForgeDirection.UP && var1.isBlockSolidOnSide(var2, var3 - 1, var4, ForgeDirection.UP) || var6 == ForgeDirection.NORTH && var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH) || var6 == ForgeDirection.SOUTH && var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH) || var6 == ForgeDirection.WEST && var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST) || var6 == ForgeDirection.EAST && var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST);
+    	// Forge start
+        ForgeDirection dir = getOrientation(var5);
+        return dir == DOWN && world.isBlockSolidOnSide(var2, var3 + 1, var4, DOWN)   || 
+        	   dir == UP && world.isBlockSolidOnSide(var2, var3 - 1, var4, UP)       || 
+        	   dir == NORTH && world.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH) || 
+        	   dir == SOUTH && world.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH) || 
+        	   dir == WEST && world.isBlockSolidOnSide(var2 + 1, var3, var4, WEST)   || 
+        	   dir == EAST && world.isBlockSolidOnSide(var2 - 1, var3, var4, EAST);
+        // Forge end
     }
 
     /**
      * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
      */
-    public boolean canPlace(World var1, int var2, int var3, int var4)
+    public boolean canPlace(World world, int var2, int var3, int var4)
     {
-        return var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST) || var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST) || var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH) || var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH) || var1.isBlockSolidOnSide(var2, var3 - 1, var4, ForgeDirection.UP) || var1.isBlockSolidOnSide(var2, var3 + 1, var4, ForgeDirection.DOWN);
+    	// Forge start
+        return world.isBlockSolidOnSide(var2 - 1, var3, var4, EAST)  || 
+        	   world.isBlockSolidOnSide(var2 + 1, var3, var4, WEST)  || 
+        	   world.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH) || 
+        	   world.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH) || 
+        	   world.isBlockSolidOnSide(var2, var3 - 1, var4, UP)    || 
+        	   world.isBlockSolidOnSide(var2, var3 + 1, var4, DOWN);
+        // Forge end
     }
 
     public int getPlacedData(World world, int i, int j, int k, int l, float f, float f1, float f2, int i1) {
@@ -48,30 +63,31 @@ public class BlockLever extends Block {
         int k1 = i1 & 7;
 
         k1 = -1;
-        if (l == 0 && world.t(i, j + 1, k)) {
+        // Forge start
+        if (l == 0 && world.isBlockSolidOnSide(i, j + 1, k, DOWN)) {
             k1 = world.random.nextBoolean() ? 0 : 7;
         }
 
-        if (l == 1 && world.v(i, j - 1, k)) {
+        if (l == 1 && world.isBlockSolidOnSide(i, j - 1, k, UP)) {
             k1 = 5 + world.random.nextInt(2);
         }
 
-        if (l == 2 && world.t(i, j, k + 1)) {
+        if (l == 2 && world.isBlockSolidOnSide(i, j, k + 1, NORTH)) {
             k1 = 4;
         }
 
-        if (l == 3 && world.t(i, j, k - 1)) {
+        if (l == 3 && world.isBlockSolidOnSide(i, j, k - 1, SOUTH)) {
             k1 = 3;
         }
 
-        if (l == 4 && world.t(i + 1, j, k)) {
+        if (l == 4 && world.isBlockSolidOnSide(i + 1, j, k, WEST)) {
             k1 = 2;
         }
 
-        if (l == 5 && world.t(i - 1, j, k)) {
+        if (l == 5 && world.isBlockSolidOnSide(i - 1, j, k, EAST)) {
             k1 = 1;
         }
-
+        // Forge end
         return k1 + j1;
     }
 
@@ -104,57 +120,57 @@ public class BlockLever extends Block {
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
      * their own) Args: x, y, z, neighbor blockID
      */
-    public void doPhysics(World var1, int var2, int var3, int var4, int var5)
+    public void doPhysics(World world, int var2, int var3, int var4, int var5)
     {
-        if (this.l(var1, var2, var3, var4))
+        if (this.l(world, var2, var3, var4))
         {
-            int var6 = var1.getData(var2, var3, var4) & 7;
+            int var6 = world.getData(var2, var3, var4) & 7;
             boolean var7 = false;
-
-            if (!var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST) && var6 == 1)
+            // Forge start
+            if (!world.isBlockSolidOnSide(var2 - 1, var3, var4, EAST) && var6 == 1)
             {
                 var7 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST) && var6 == 2)
+            if (!world.isBlockSolidOnSide(var2 + 1, var3, var4, WEST) && var6 == 2)
             {
                 var7 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH) && var6 == 3)
+            if (!world.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH) && var6 == 3)
             {
                 var7 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH) && var6 == 4)
+            if (!world.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH) && var6 == 4)
             {
                 var7 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2, var3 - 1, var4, ForgeDirection.UP) && var6 == 5)
+            if (!world.isBlockSolidOnSide(var2, var3 - 1, var4, UP) && var6 == 5)
             {
                 var7 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2, var3 - 1, var4, ForgeDirection.UP) && var6 == 6)
+            if (!world.isBlockSolidOnSide(var2, var3 - 1, var4, UP) && var6 == 6)
             {
                 var7 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2, var3 + 1, var4, ForgeDirection.DOWN) && var6 == 0)
+            if (!world.isBlockSolidOnSide(var2, var3 + 1, var4, DOWN) && var6 == 0)
             {
                 var7 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2, var3 + 1, var4, ForgeDirection.DOWN) && var6 == 7)
+            if (!world.isBlockSolidOnSide(var2, var3 + 1, var4, DOWN) && var6 == 7)
             {
                 var7 = true;
             }
-
+            // Forge end
             if (var7)
             {
-                this.c(var1, var2, var3, var4, var1.getData(var2, var3, var4), 0);
-                var1.setTypeId(var2, var3, var4, 0);
+                this.c(world, var2, var3, var4, world.getData(var2, var3, var4), 0);
+                world.setTypeId(var2, var3, var4, 0);
             }
         }
     }

@@ -4,6 +4,7 @@ import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import java.util.Random;
 import net.minecraftforge.common.ForgeDirection;
+import static net.minecraftforge.common.ForgeDirection.*;
 
 public class BlockTorch extends Block
 {
@@ -60,7 +61,7 @@ public class BlockTorch extends Block
         else
         {
             int var5 = var1.getTypeId(var2, var3, var4);
-            return Block.byId[var5] != null && Block.byId[var5].canPlaceTorchOnTop(var1, var2, var3, var4);
+            return Block.byId[var5] != null && Block.byId[var5].canPlaceTorchOnTop(var1, var2, var3, var4); // Forge
         }
     }
 
@@ -69,7 +70,13 @@ public class BlockTorch extends Block
      */
     public boolean canPlace(World var1, int var2, int var3, int var4)
     {
-        return var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST, true) || var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST, true) || var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH, true) || var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH, true) || this.l(var1, var2, var3 - 1, var4);
+    	// Forge start
+        return var1.isBlockSolidOnSide(var2 - 1, var3, var4, EAST, true)  || 
+        	   var1.isBlockSolidOnSide(var2 + 1, var3, var4, WEST, true)  || 
+        	   var1.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH, true) || 
+        	   var1.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH, true) || 
+        	   this.l(var1, var2, var3 - 1, var4);
+        // Forge end
     }
 
     /**
@@ -83,27 +90,27 @@ public class BlockTorch extends Block
         {
             var9 = 5;
         }
-
-        if (var5 == 2 && var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH, true))
+        // Forge start
+        if (var5 == 2 && var1.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH, true))
         {
             var9 = 4;
         }
 
-        if (var5 == 3 && var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH, true))
+        if (var5 == 3 && var1.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH, true))
         {
             var9 = 3;
         }
 
-        if (var5 == 4 && var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST, true))
+        if (var5 == 4 && var1.isBlockSolidOnSide(var2 + 1, var3, var4, WEST, true))
         {
             var9 = 2;
         }
 
-        if (var5 == 5 && var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST, true))
+        if (var5 == 5 && var1.isBlockSolidOnSide(var2 - 1, var3, var4, EAST, true))
         {
             var9 = 1;
         }
-
+        // Forge end
         var1.setData(var2, var3, var4, var9);
     }
 
@@ -125,19 +132,20 @@ public class BlockTorch extends Block
      */
     public void onPlace(World var1, int var2, int var3, int var4)
     {
-        if (var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST, true))
+    	// Forge start
+        if (var1.isBlockSolidOnSide(var2 - 1, var3, var4, EAST, true))
         {
             var1.setData(var2, var3, var4, 1);
         }
-        else if (var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST, true))
+        else if (var1.isBlockSolidOnSide(var2 + 1, var3, var4, WEST, true))
         {
             var1.setData(var2, var3, var4, 2);
         }
-        else if (var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH, true))
+        else if (var1.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH, true))
         {
             var1.setData(var2, var3, var4, 3);
         }
-        else if (var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH, true))
+        else if (var1.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH, true))
         {
             var1.setData(var2, var3, var4, 4);
         }
@@ -145,7 +153,7 @@ public class BlockTorch extends Block
         {
             var1.setData(var2, var3, var4, 5);
         }
-
+        // Forge end
         this.n(var1, var2, var3, var4);
     }
 
@@ -159,27 +167,27 @@ public class BlockTorch extends Block
         {
             int var6 = var1.getData(var2, var3, var4);
             boolean var7 = false;
-
-            if (!var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST, true) && var6 == 1)
+            // Forge start
+            if (!var1.isBlockSolidOnSide(var2 - 1, var3, var4, EAST, true) && var6 == 1)
             {
                 var7 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST, true) && var6 == 2)
+            if (!var1.isBlockSolidOnSide(var2 + 1, var3, var4, WEST, true) && var6 == 2)
             {
                 var7 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH, true) && var6 == 3)
+            if (!var1.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH, true) && var6 == 3)
             {
                 var7 = true;
             }
 
-            if (!var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH, true) && var6 == 4)
+            if (!var1.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH, true) && var6 == 4)
             {
                 var7 = true;
             }
-
+            // Forge end
             if (!this.l(var1, var2, var3 - 1, var4) && var6 == 5)
             {
                 var7 = true;

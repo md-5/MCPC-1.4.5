@@ -18,6 +18,13 @@ import net.minecraft.server.ItemStack;
 import net.minecraft.server.World;
 
 
+/**
+ * Deprecated without replacement, use vanilla DispenserRegistry code
+ *
+ * @author cpw
+ *
+ */
+@Deprecated
 public interface IDispenseHandler
 {
     /**

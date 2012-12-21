@@ -22,14 +22,10 @@ public class LiquidStack {
 	}
 
 	public LiquidStack(Item item, int amount) {
-		// CraftBukkit id
-		// Forge shiftedIndex
 		this(item.id, amount, 0);
 	}
 
 	public LiquidStack(Block block, int amount) {
-		// CraftBukkit id
-		// Forge blockID
 		this(block.id, amount, 0);
 	}
 

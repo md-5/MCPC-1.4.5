@@ -130,8 +130,12 @@ public class PlayerInstance {
                     for (k = 0; k < 16; ++k) {
                         if ((this.f & 1 << k) != 0) {
                             l = k << 4;
-                            List list = PlayerManager.a(this.playerManager).getTileEntities(i, l, j, i + 16, l + 16, j + 16);
-
+                            // Forge start
+                            //BugFix: 16 makes it load an extra chunk, which isn't associated with a player, which makes it not unload unless a player walks near it.
+                            //ToDo: Find a way to efficiently clean abandoned chunks.
+                            //List list = PlayerManager.a(this.playerManager).getTileEntities(i, l, j, i + 16, l + 16, j + 16);
+                            List list = PlayerManager.a(this.playerManager).getTileEntities(i, l, j, i + 15, l + 16, j + 15);
+                            // Forge end
                             for (int i1 = 0; i1 < list.size(); ++i1) {
                                 this.sendTileEntity((TileEntity) list.get(i1));
                             }

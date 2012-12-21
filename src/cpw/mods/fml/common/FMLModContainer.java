@@ -28,6 +28,18 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import mcpc.com.google.common.base.Function;
+import mcpc.com.google.common.base.Strings;
+import mcpc.com.google.common.base.Throwables;
+import mcpc.com.google.common.collect.ArrayListMultimap;
+import mcpc.com.google.common.collect.BiMap;
+import mcpc.com.google.common.collect.ImmutableBiMap;
+import mcpc.com.google.common.collect.Lists;
+import mcpc.com.google.common.collect.Multimap;
+import mcpc.com.google.common.collect.SetMultimap;
+import mcpc.com.google.common.collect.Sets;
+import mcpc.com.google.common.eventbus.EventBus;
+import mcpc.com.google.common.eventbus.Subscribe;
 
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.Metadata;
@@ -48,18 +60,6 @@ import cpw.mods.fml.common.versioning.ArtifactVersion;
 import cpw.mods.fml.common.versioning.DefaultArtifactVersion;
 import cpw.mods.fml.common.versioning.VersionParser;
 import cpw.mods.fml.common.versioning.VersionRange;
-import mcpc.com.google.common.base.Function;
-import mcpc.com.google.common.base.Strings;
-import mcpc.com.google.common.base.Throwables;
-import mcpc.com.google.common.collect.ArrayListMultimap;
-import mcpc.com.google.common.collect.BiMap;
-import mcpc.com.google.common.collect.ImmutableBiMap;
-import mcpc.com.google.common.collect.Lists;
-import mcpc.com.google.common.collect.Multimap;
-import mcpc.com.google.common.collect.SetMultimap;
-import mcpc.com.google.common.collect.Sets;
-import mcpc.com.google.common.eventbus.EventBus;
-import mcpc.com.google.common.eventbus.Subscribe;
 
 public class FMLModContainer implements ModContainer
 {
@@ -407,6 +407,8 @@ public class FMLModContainer implements ModContainer
         {
             ModClassLoader modClassLoader = event.getModClassLoader();
             modClassLoader.addFile(source);
+            // MCPC - show users what mod is being loaded in case a crash occurs
+            FMLLog.fine("Constructing mod from file source : " + source);
             Class<?> clazz = Class.forName(className, true, modClassLoader);
             ASMDataTable asmHarvestedAnnotations = event.getASMHarvestedData();
             // TODO

@@ -152,7 +152,7 @@ public class TileEntityBrewingStand extends TileEntity implements IInventory, IS
             }
 
             if (Item.byId[itemstack.id].s()) {
-                this.items[3] = Item.byId[itemstack.id].getContainerItemStack(this.items[3]);
+                this.items[3] = Item.byId[itemstack.id].getContainerItemStack(this.items[3]); // Forge
             } else {
                 --this.items[3].count;
                 if (this.items[3].count <= 0) {
@@ -258,7 +258,7 @@ public class TileEntityBrewingStand extends TileEntity implements IInventory, IS
         return i;
     }
     
-
+    // Forge start
     public int getStartInventorySide(ForgeDirection var1)
     {
         return var1 == ForgeDirection.UP ? 3 : 0;
@@ -268,4 +268,5 @@ public class TileEntityBrewingStand extends TileEntity implements IInventory, IS
     {
         return var1 == ForgeDirection.UP ? 1 : 3;
     }
+    // Forge end
 }

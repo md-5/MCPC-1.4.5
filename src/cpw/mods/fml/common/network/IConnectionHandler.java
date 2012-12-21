@@ -1,10 +1,10 @@
 package cpw.mods.fml.common.network;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.NetHandler;
 import net.minecraft.server.NetLoginHandler;
 import net.minecraft.server.INetworkManager;
 import net.minecraft.server.Packet1Login;
+import net.minecraft.server.MinecraftServer;
 
 public interface IConnectionHandler
 {

@@ -37,19 +37,20 @@ public class ChestGenHooks
 
     private static void init()
     {
-        if (!hasInit)
+        if (hasInit)
         {
-            addInfo("mineshaftCorridor", WorldGenMineshaftPieces.a, 3, 7);
-            addInfo("pyramidDesertyChest", WorldGenPyramidPiece.i, 2, 7);
-            addInfo("pyramidJungleChest", WorldGenJungleTemple.l, 2, 7);
-            addInfo("pyramidJungleDispenser", WorldGenJungleTemple.m, 2, 2);
-            addInfo("strongholdCorridor", WorldGenStrongholdChestCorridor.a, 2, 4);
-            addInfo("strongholdLibrary", WorldGenStrongholdLibrary.b, 1, 5);
-            addInfo("strongholdCrossing", WorldGenStrongholdRoomCrossing.c, 1, 5);
-            addInfo("villageBlacksmith", WorldGenVillageBlacksmith.a, 3, 9);
-            addInfo("bonusChest", WorldServer.T, 10, 10);
+            return;
         }
-    }
+        addInfo("mineshaftCorridor", WorldGenMineshaftPieces.a, 3, 7);
+        addInfo("pyramidDesertyChest", WorldGenPyramidPiece.i, 2, 7);
+        addInfo("pyramidJungleChest", WorldGenJungleTemple.l, 2, 7);
+        addInfo("pyramidJungleDispenser", WorldGenJungleTemple.m, 2, 2);
+        addInfo("strongholdCorridor", WorldGenStrongholdChestCorridor.a, 2, 4);
+        addInfo("strongholdLibrary", WorldGenStrongholdLibrary.b, 1, 5);
+        addInfo("strongholdCrossing", WorldGenStrongholdRoomCrossing.c, 1, 5);
+        addInfo("villageBlacksmith", WorldGenVillageBlacksmith.a, 3, 9);
+        addInfo("bonusChest", WorldServer.T, 10, 10);
+  }
 
     private static void addInfo(String category, StructurePieceTreasure[] items, int min, int max)
     {

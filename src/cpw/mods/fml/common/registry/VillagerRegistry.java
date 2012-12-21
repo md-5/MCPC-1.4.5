@@ -12,12 +12,12 @@ import net.minecraft.server.WorldGenVillagePieceWeight;
 import net.minecraft.server.WorldGenVillageStartPiece;
 import net.minecraft.server.Tuple;
 
-
-import cpw.mods.fml.common.FMLLog;
 import mcpc.com.google.common.collect.ArrayListMultimap;
 import mcpc.com.google.common.collect.Lists;
 import mcpc.com.google.common.collect.Maps;
 import mcpc.com.google.common.collect.Multimap;
+
+import cpw.mods.fml.common.FMLLog;
 
 /**
  * Registry for villager trading control

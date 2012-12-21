@@ -58,11 +58,11 @@ public class BlockLog extends Block
                     for (int var11 = -var7; var11 <= var7; ++var11)
                     {
                         int var12 = var1.getTypeId(var2 + var9, var3 + var10, var4 + var11);
-
+                        // Forge start
                         if (Block.byId[var12] != null)
                         {
                             Block.byId[var12].beginLeavesDecay(var1, var2 + var9, var3 + var10, var4 + var11);
-                        }
+                        } // Forge end
                     }
                 }
             }
@@ -136,6 +136,7 @@ public class BlockLog extends Block
         return new ItemStack(this.id, 1, e(var1));
     }
 
+    // Forge start
     public boolean canSustainLeaves(World var1, int var2, int var3, int var4)
     {
         return true;
@@ -145,4 +146,5 @@ public class BlockLog extends Block
     {
         return true;
     }
+    // Forge end
 }

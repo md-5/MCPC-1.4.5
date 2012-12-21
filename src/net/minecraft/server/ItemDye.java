@@ -38,7 +38,7 @@ public class ItemDye extends Item {
 
             if (itemstack.getData() == 15) {
                 i1 = world.getTypeId(i, j, k);
-                
+                // Forge start
                 BonemealEvent var13 = new BonemealEvent(entityhuman, world, i1, i, j, k);
                 if (MinecraftForge.EVENT_BUS.post(var13))
                     return false;
@@ -50,7 +50,7 @@ public class ItemDye extends Item {
 
                     return true;
                 }
-                
+                // Forge end
                 if (i1 == Block.SAPLING.id) {
                     if (!world.isStatic) {
                         // CraftBukkit start
@@ -136,7 +136,7 @@ public class ItemDye extends Item {
                                     }
                                 }else
                                 {
-                                    ForgeHooks.plantGrass(world, k1, l1, i2);
+                                    ForgeHooks.plantGrass(world, k1, l1, i2); // Forge
                                 }
                             }
                         }

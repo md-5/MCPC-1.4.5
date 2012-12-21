@@ -478,6 +478,12 @@ public abstract class MinecraftServer implements Runnable, IMojangStatistics, IC
                 this.a((CrashReport) null);
             }
         } catch (Throwable throwable) {
+        	// Forge start
+        	if (FMLCommonHandler.instance().shouldServerBeKilledQuietly())
+        	{
+        	    return;
+        	}
+        	// Forge end
             throwable.printStackTrace();
             log.log(Level.SEVERE, "Encountered an unexpected exception " + throwable.getClass().getSimpleName(), throwable);
             CrashReport crashreport = null;
@@ -500,6 +506,12 @@ public abstract class MinecraftServer implements Runnable, IMojangStatistics, IC
         } finally {
             org.bukkit.craftbukkit.util.WatchdogThread.stopping(); // Spigot
             try {
+            	// Forge start
+            	if (FMLCommonHandler.instance().shouldServerBeKilledQuietly())
+            	{
+            	    return;
+            	}
+            	// Forge end
                 this.stop();
                 this.isStopped = true;
             } catch (Throwable throwable1) {
@@ -528,11 +540,11 @@ public abstract class MinecraftServer implements Runnable, IMojangStatistics, IC
      * Main function called by run() every loop.
      */
     protected void q() throws ExceptionWorldConflict { // CraftBukkit - added throws
-    	FMLCommonHandler.instance().rescheduleTicks(Side.SERVER);
+    	FMLCommonHandler.instance().rescheduleTicks(Side.SERVER); // Forge
     	long i = System.nanoTime();
 
         AxisAlignedBB.a().a();
-        FMLCommonHandler.instance().onPreServerTick();
+        FMLCommonHandler.instance().onPreServerTick(); // Forge
         
         ++this.ticks;
         if (this.T) {
@@ -572,7 +584,7 @@ public abstract class MinecraftServer implements Runnable, IMojangStatistics, IC
 
         this.methodProfiler.b();
         this.methodProfiler.b();
-        FMLCommonHandler.instance().onPostServerTick();
+        FMLCommonHandler.instance().onPostServerTick(); // Forge
     }
 
     public void r() {
@@ -644,11 +656,12 @@ public abstract class MinecraftServer implements Runnable, IMojangStatistics, IC
             // } // CraftBukkit
 
             // this.k[i][this.ticks % 100] = System.nanoTime() - j; // CraftBukkit
+                // Forge start
                 ((long[])this.worldTickTimes.get(worldserver.dimension))[this.ticks % 100] = System.nanoTime() - j;
         }
         this.methodProfiler.c("dim_unloading");
         DimensionManager.unloadWorlds(this.worldTickTimes);
-        
+        // Forge end
         this.methodProfiler.c("connection");
         this.ae().b();
         this.methodProfiler.c("players");
@@ -673,11 +686,11 @@ public abstract class MinecraftServer implements Runnable, IMojangStatistics, IC
     
     public static void main(String[] opt)
     {
-    	FMLRelauncher.handleServerRelaunch(new ArgsWrapper(opt));
+    	FMLRelauncher.handleServerRelaunch(new ArgsWrapper(opt)); // Forge
     }
 
-    
-    public static void fmlReentry(ArgsWrapper var1) { // CraftBukkit - replaces main(String[] astring)
+    @SideOnly(Side.SERVER)
+    public static void fmlReentry(ArgsWrapper var1) { // Forge, CraftBukkit - replaces main(String[] astring)
     	
     	log.severe(var1.args.getClass().getName());
     	OptionSet options = Main.loadOptions(var1.args);
@@ -733,15 +746,17 @@ public abstract class MinecraftServer implements Runnable, IMojangStatistics, IC
 
     public WorldServer getWorldServer(int var1)
     {
-        WorldServer var2 = DimensionManager.getWorld(var1);
+    	// Forge start
+        WorldServer ret = DimensionManager.getWorld(var1);
 
-        if (var2 == null)
+        if (ret == null)
         {
             DimensionManager.initDimension(var1);
-            var2 = DimensionManager.getWorld(var1);
+            ret = DimensionManager.getWorld(var1);
         }
 
-        return var2;
+        return ret;
+        // Forge end
     }
 
     public String u() {

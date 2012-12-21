@@ -72,9 +72,11 @@ public class BlockStem extends BlockFlower {
                     }
 
                     int l1 = world.getTypeId(j1, j - 1, k1);
-                    boolean var12 = byId[l1] != null && byId[l1].canSustainPlant(world, j1, j - 1, k1, ForgeDirection.UP, this);
+                    // Forge start
+                    boolean isSoil = byId[l1] != null && byId[l1].canSustainPlant(world, j1, j - 1, k1, ForgeDirection.UP, this);
 
-                    if (world.getTypeId(j1, j, k1) == 0 && (var12 || l1 == Block.DIRT.id || l1 == Block.GRASS.id)) {
+                    if (world.getTypeId(j1, j, k1) == 0 && (isSoil || l1 == Block.DIRT.id || l1 == Block.GRASS.id)) { 
+                    	// Forge end
                         CraftEventFactory.handleBlockGrowEvent(world, j1, j, k1, this.blockFruit.id, 0); // CraftBukkit
                     }
                 }
@@ -109,11 +111,11 @@ public class BlockStem extends BlockFlower {
                 int var19 = var1.getTypeId(var17, var3 - 1, var18);
                 float var20 = 0.0F;
 
-                if (byId[var19] != null && byId[var19].canSustainPlant(var1, var17, var3 - 1, var18, ForgeDirection.UP, this))
+                if (byId[var19] != null && byId[var19].canSustainPlant(var1, var17, var3 - 1, var18, ForgeDirection.UP, this)) // Forge
                 {
                     var20 = 1.0F;
 
-                    if (byId[var19].isFertile(var1, var17, var3 - 1, var18))
+                    if (byId[var19].isFertile(var1, var17, var3 - 1, var18)) // Forge
                     {
                         var20 = 3.0F;
                     }
@@ -163,23 +165,26 @@ public class BlockStem extends BlockFlower {
      */
     public void dropNaturally(World var1, int var2, int var3, int var4, int var5, float var6, int var7)
     {
-        super.dropNaturally(var1, var2, var3, var4, var5, var6, var7);
+        super.dropNaturally(var1, var2, var3, var4, var5, var6, var7); // Forge
     }
 
-    public ArrayList getBlockDropped(World var1, int var2, int var3, int var4, int var5, int var6)
+    // Forge start
+    @Override
+    public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
     {
-        ArrayList var7 = new ArrayList();
+        ArrayList ret = new ArrayList();
 
         for (int var8 = 0; var8 < 3; ++var8)
         {
-            if (var1.random.nextInt(15) <= var5)
+            if (world.random.nextInt(15) <= metadata)
             {
-                var7.add(new ItemStack(this.blockFruit == PUMPKIN ? Item.PUMPKIN_SEEDS : Item.MELON_SEEDS));
+                ret.add(new ItemStack(this.blockFruit == PUMPKIN ? Item.PUMPKIN_SEEDS : Item.MELON_SEEDS));
             }
         }
 
-        return var7;
+        return ret;
     }
+    // Forge end
 
     public int getDropType(int i, Random random, int j) {
         return -1;

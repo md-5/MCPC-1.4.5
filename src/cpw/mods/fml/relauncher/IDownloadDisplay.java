@@ -1,18 +1,22 @@
 package cpw.mods.fml.relauncher;
 
+import javax.swing.JDialog;
+
 public interface IDownloadDisplay
 {
-    void resetProgress(int var1);
 
-    void setPokeThread(Thread var1);
+    void resetProgress(int sizeGuess);
 
-    void updateProgress(int var1);
+    void setPokeThread(Thread currentThread);
+
+    void updateProgress(int fullLength);
 
     boolean shouldStopIt();
 
-    void updateProgressString(String var1, Object ... var2);
+    void updateProgressString(String string, Object ... data);
 
     Object makeDialog();
 
     void makeHeadless();
+
 }

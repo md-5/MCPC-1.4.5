@@ -5,7 +5,7 @@ import java.util.Random;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 
-public class BlockLongGrass extends BlockFlower implements IShearable
+public class BlockLongGrass extends BlockFlower implements IShearable // Forge
 {
     protected BlockLongGrass(int var1, int var2)
     {
@@ -27,7 +27,7 @@ public class BlockLongGrass extends BlockFlower implements IShearable
      */
     public int getDropType(int var1, Random var2, int var3)
     {
-        return var2.nextInt(8) == 0?Item.SEEDS.id:-1;
+        return -1; // Forge
     }
 
     /**
@@ -42,14 +42,8 @@ public class BlockLongGrass extends BlockFlower implements IShearable
      * Called when the player destroys a block with an item that can harvest it. (i, j, k) are the coordinates of the
      * block and l is the block's subtype/damage.
      */
-   public void a(World var1, EntityHuman var2, int var3, int var4, int var5, int var6) {
-      if(!var1.isStatic && var2.bT() != null && var2.bT().id == Item.SHEARS.id) {
-         var2.a(StatisticList.C[this.id], 1);
-         this.b(var1, var3, var4, var5, new ItemStack(Block.LONG_GRASS, 1, var6));
-      } else {
-         super.a(var1, var2, var3, var4, var5, var6);
-      }
-
+   public void a(World world, EntityHuman entityplayer, int var3, int var4, int var5, int var6) {
+	   super.a(world, entityplayer, var3, var4, var5, var6); // Forge
    }
 
 
@@ -57,36 +51,39 @@ public class BlockLongGrass extends BlockFlower implements IShearable
       return var1.getData(var2, var3, var4);
    }
 
-    public ArrayList getBlockDropped(World var1, int var2, int var3, int var4, int var5, int var6)
-    {
-        ArrayList var7 = new ArrayList();
+   // Forge start
+   @Override
+   public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int meta, int fortune)
+   {
+	   ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
 
-        if (var1.random.nextInt(8) != 0)
-        {
-            return var7;
-        }
-        else
-        {
-            ItemStack var8 = ForgeHooks.getGrassSeed(var1);
+       if (world.random.nextInt(8) != 0)
+       {
+           return ret;
+       }
+       else
+       {
+           ItemStack item = ForgeHooks.getGrassSeed(world);
 
-            if (var8 != null)
-            {
-                var7.add(var8);
-            }
+           if (item != null)
+           {
+               ret.add(item);
+           }
 
-            return var7;
-        }
-    }
+           return ret;
+       }
+   }
 
-    public boolean isShearable(ItemStack var1, World var2, int var3, int var4, int var5)
-    {
-        return true;
-    }
+   public boolean isShearable(ItemStack item, World world, int x, int y, int z) 
+   {
+       return true;
+   }
 
-    public ArrayList onSheared(ItemStack var1, World var2, int var3, int var4, int var5, int var6)
-    {
-        ArrayList var7 = new ArrayList();
-        var7.add(new ItemStack(this, 1, var2.getData(var3, var4, var5)));
-        return var7;
-    }
+   public ArrayList<ItemStack> onSheared(ItemStack item, World world, int x, int y, int z, int fortune) 
+   {
+	   ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+       ret.add(new ItemStack(this, 1, world.getData(x, y, z)));
+       return ret;
+   }
+   // Forge end
 }

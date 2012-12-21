@@ -20,6 +20,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
+import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.common.registry.ItemData;
+
 import net.minecraft.server.NBTBase;
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
@@ -27,7 +30,7 @@ import net.minecraft.server.NBTTagString;
 import net.minecraft.server.WorldData;
 import net.minecraft.server.WorldNBTStorage;
 
-
+import mcpc.com.google.common.eventbus.EventBus;
 import mcpc.com.google.common.collect.MapMaker;
 import mcpc.com.google.common.collect.Sets;
 import mcpc.com.google.common.eventbus.EventBus;
@@ -79,6 +82,9 @@ public class FMLDummyContainer extends DummyModContainer implements WorldAccessC
             list.add(mod);
         }
         fmlData.set("ModList", list);
+        NBTTagList itemList = new NBTTagList();
+        GameData.writeItemData(itemList);
+        fmlData.set("ModItemData", itemList);
         return fmlData;
     }
 
@@ -105,5 +111,16 @@ public class FMLDummyContainer extends DummyModContainer implements WorldAccessC
                 }
             }
         }
+        if (tag.hasKey("ModItemData"))
+        {
+            NBTTagList modList = tag.getList("ModItemData");
+            Set<ItemData> worldSaveItems = GameData.buildWorldItemData(modList);
+            GameData.validateWorldSave(worldSaveItems);
+        }
+        else
+        {
+            GameData.validateWorldSave(null);
     }
+}
+
 }

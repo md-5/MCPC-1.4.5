@@ -85,7 +85,6 @@ public abstract class ServerConfigurationManagerAbstract {
         if (maxPlayers > 60) {
             maxPlayers = 60;
         }
-        
         netserverhandler.sendPacket(new Packet1Login(entityplayer.id, worldserver.getWorldData().getType(), entityplayer.itemInWorldManager.getGameMode(), worldserver.getWorldData().isHardcore(), worldserver.worldProvider.dimension, worldserver.difficulty, worldserver.getHeight(), maxPlayers));
         entityplayer.getBukkitEntity().sendSupportedChannels();
         // CraftBukkit end
@@ -111,7 +110,7 @@ public abstract class ServerConfigurationManagerAbstract {
         }
 
         entityplayer.syncInventory();
-        FMLNetworkHandler.handlePlayerLogin(entityplayer, netserverhandler, inetworkmanager);
+        FMLNetworkHandler.handlePlayerLogin(entityplayer, netserverhandler, inetworkmanager); // Forge
     }
 
     public void setPlayerFileData(WorldServer[] aworldserver) {
@@ -209,7 +208,7 @@ public abstract class ServerConfigurationManagerAbstract {
         this.cserver.getPluginManager().callEvent(playerQuitEvent);
         // CraftBukkit end
 
-        GameRegistry.onPlayerLogout(entityplayer);
+        GameRegistry.onPlayerLogout(entityplayer); // Forge
         this.b(entityplayer);
         WorldServer worldserver = entityplayer.p();
 
@@ -419,7 +418,7 @@ public abstract class ServerConfigurationManagerAbstract {
         }
         // CraftBukkit end
         
-        GameRegistry.onPlayerRespawn(entityplayer1);
+        GameRegistry.onPlayerRespawn(entityplayer1); // Forge
 
         return entityplayer1;
     }
@@ -498,7 +497,7 @@ public abstract class ServerConfigurationManagerAbstract {
         this.moveToWorld(entityplayer, toWorld.dimension, true, finalLocation);
         // CraftBukkit end
         
-        GameRegistry.onPlayerChangedDimension(entityplayer);
+        GameRegistry.onPlayerChangedDimension(entityplayer); // Forge
     }
     
     public void transferEntityToWorld(Entity var1, int var2, WorldServer var3, WorldServer var4, PortalTravelAgent var5)

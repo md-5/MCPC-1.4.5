@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -30,18 +29,6 @@ import java.util.logging.Level;
 import net.minecraft.server.CrashReport;
 import net.minecraft.server.CrashReportVersion;
 
-
-import cpw.mods.fml.common.LoaderState.ModState;
-import cpw.mods.fml.common.discovery.ModDiscoverer;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLLoadEvent;
-import cpw.mods.fml.common.functions.ModIdFunction;
-import cpw.mods.fml.common.modloader.BaseModProxy;
-import cpw.mods.fml.common.toposort.ModSorter;
-import cpw.mods.fml.common.toposort.ModSortingException;
-import cpw.mods.fml.common.toposort.TopologicalSort;
-import cpw.mods.fml.common.versioning.ArtifactVersion;
-import cpw.mods.fml.common.versioning.VersionParser;
 import mcpc.com.google.common.base.CharMatcher;
 import mcpc.com.google.common.base.Function;
 import mcpc.com.google.common.base.Joiner;
@@ -65,6 +52,18 @@ import mcpc.com.google.common.collect.TreeMultimap;
 import mcpc.com.google.common.collect.Multiset.Entry;
 import mcpc.com.google.common.collect.Sets.SetView;
 import mcpc.com.google.common.primitives.Ints;
+
+import cpw.mods.fml.common.LoaderState.ModState;
+import cpw.mods.fml.common.discovery.ModDiscoverer;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLLoadEvent;
+import cpw.mods.fml.common.functions.ModIdFunction;
+import cpw.mods.fml.common.modloader.BaseModProxy;
+import cpw.mods.fml.common.toposort.ModSorter;
+import cpw.mods.fml.common.toposort.ModSortingException;
+import cpw.mods.fml.common.toposort.TopologicalSort;
+import cpw.mods.fml.common.versioning.ArtifactVersion;
+import cpw.mods.fml.common.versioning.VersionParser;
 
 /**
  * The loader class performs the actual loading of the mod code from disk.
@@ -363,22 +362,14 @@ public class Loader
             }
         }
 
-       // ImmutableMultiset<ModContainer> duplist = Multisets.copyHighestCountFirst(dupsearch.keys());
-        /* SetMultimap<ModContainer, File> dupes = LinkedHashMultimap.create();
+        ImmutableMultiset<ModContainer> duplist = Multisets.copyHighestCountFirst(dupsearch.keys());
+        SetMultimap<ModContainer, File> dupes = LinkedHashMultimap.create();
         for (Entry<ModContainer> e : duplist.entrySet())
         {
             if (e.getCount() > 1)
             {
                 FMLLog.severe("Found a duplicate mod %s at %s", e.getElement().getModId(), dupsearch.get(e.getElement()));
                 dupes.putAll(e.getElement(),dupsearch.get(e.getElement()));
-            }
-        }*/
-        SetMultimap<ModContainer, File> dupes = LinkedHashMultimap.create();
-        for(final Entry<ModContainer> entry : getEntriesSortedByFrequency(dupsearch.keys(), false)){
-            if (entry.getCount() > 1)
-            {
-                FMLLog.severe("Found a duplicate mod %s at %s", entry.getElement().getModId(), dupsearch.get(entry.getElement()));
-                dupes.putAll(entry.getElement(),dupsearch.get(entry.getElement()));
             }
         }
         if (!dupes.isEmpty())
@@ -733,7 +724,7 @@ public class Loader
 
     public ModContainer activeModContainer()
     {
-        return modController.activeContainer();
+        return modController != null ? modController.activeContainer() : null;
     }
 
     public boolean isInState(LoaderState state)
@@ -747,34 +738,10 @@ public class Loader
     }
 
 	public boolean hasReachedState(LoaderState state) {
-		return modController.hasReachedState(state);
+		return modController != null ? modController.hasReachedState(state) : false;
 	}
 
 	public String getMCPVersionString() {
 		return String.format("MCP v%s", mcpversion);
-	}
-	
-	private enum EntryComp implements Comparator<Multiset.Entry<?>>{
-	    DESCENDING{
-	        @Override
-	        public int compare(final Entry<?> a, final Entry<?> b){
-	            return Ints.compare(b.getCount(), a.getCount());
-	        }
-	    },
-	    ASCENDING{
-	        @Override
-	        public int compare(final Entry<?> a, final Entry<?> b){
-	            return Ints.compare(a.getCount(), b.getCount());
-	        }
-	    },
-	}
-
-	public static <E> List<Entry<E>> getEntriesSortedByFrequency(
-	    final Multiset<E> ms, final boolean ascending){
-	    final List<Entry<E>> entryList = Lists.newArrayList(ms.entrySet());
-	    Collections.sort(entryList, ascending
-	        ? EntryComp.ASCENDING
-	        : EntryComp.DESCENDING);
-	    return entryList;
 	}
 }

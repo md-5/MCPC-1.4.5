@@ -1,6 +1,7 @@
 package net.minecraft.server;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
@@ -121,6 +122,7 @@ public class SlotResult extends Slot
 
                 if (var4.getItem().s())
                 {
+                	// Forge start
                     ItemStack var5 = var4.getItem().getContainerItemStack(var4);
 
                     if (var5.f() && var5.getData() > var5.k())
@@ -131,6 +133,7 @@ public class SlotResult extends Slot
 
                     if (var5 != null && (!var4.getItem().h(var4) || !this.b.inventory.pickup(var5)))
                     {
+                    // Forge end
                         if (this.a.getItem(var3) == null)
                         {
                             this.a.setItem(var3, var5);

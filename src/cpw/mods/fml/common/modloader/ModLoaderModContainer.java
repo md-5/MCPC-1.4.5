@@ -30,6 +30,14 @@ import java.util.logging.Level;
 
 import net.minecraft.server.ICommand;
 
+import mcpc.com.google.common.base.Strings;
+import mcpc.com.google.common.base.Throwables;
+import mcpc.com.google.common.collect.ImmutableMap;
+import mcpc.com.google.common.collect.Lists;
+import mcpc.com.google.common.collect.Sets;
+import mcpc.com.google.common.eventbus.EventBus;
+import mcpc.com.google.common.eventbus.Subscribe;
+
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -51,7 +59,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.FMLNetworkHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -60,13 +67,6 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.common.versioning.ArtifactVersion;
 import cpw.mods.fml.common.versioning.DefaultArtifactVersion;
 import cpw.mods.fml.common.versioning.VersionRange;
-import mcpc.com.google.common.base.Strings;
-import mcpc.com.google.common.base.Throwables;
-import mcpc.com.google.common.collect.ImmutableMap;
-import mcpc.com.google.common.collect.Lists;
-import mcpc.com.google.common.collect.Sets;
-import mcpc.com.google.common.eventbus.EventBus;
-import mcpc.com.google.common.eventbus.Subscribe;
 
 public class ModLoaderModContainer implements ModContainer
 {
@@ -579,7 +579,6 @@ public class ModLoaderModContainer implements ModContainer
             evt.registerServerCommand(cmd);
         }
     }
-    
     @Override
     public ArtifactVersion getProcessedVersion()
     {

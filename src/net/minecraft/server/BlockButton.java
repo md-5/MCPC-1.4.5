@@ -7,6 +7,8 @@ import net.minecraftforge.common.ForgeDirection;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
 //CraftBukkit end
+import net.minecraftforge.common.ForgeDirection;
+import static net.minecraftforge.common.ForgeDirection.*;
 
 public class BlockButton extends Block {
 
@@ -40,12 +42,22 @@ public class BlockButton extends Block {
      */
     public boolean canPlace(World var1, int var2, int var3, int var4, int var5)
     {
-        ForgeDirection var6 = ForgeDirection.getOrientation(var5);
-        return var6 == ForgeDirection.NORTH && var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH) || var6 == ForgeDirection.SOUTH && var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH) || var6 == ForgeDirection.WEST && var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST) || var6 == ForgeDirection.EAST && var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST);
+    	// Forge start
+        ForgeDirection dir = ForgeDirection.getOrientation(var5);
+        return dir == NORTH && var1.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH) ||
+        	   dir == SOUTH && var1.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH) || 
+        	   dir == WEST && var1.isBlockSolidOnSide(var2 + 1, var3, var4, WEST) || 
+        	   dir == EAST && var1.isBlockSolidOnSide(var2 - 1, var3, var4, EAST);
+        // Forge end
     }
 
     public boolean canPlace(World world, int i, int j, int k) {
-        return world.t(i - 1, j, k) ? true : (world.t(i + 1, j, k) ? true : (world.t(i, j, k - 1) ? true : world.t(i, j, k + 1)));
+    	// Forge start
+    	return (world.isBlockSolidOnSide(i - 1, j, k, EAST)) ||
+    		   (world.isBlockSolidOnSide(i + 1, j, k, WEST)) ||
+    		   (world.isBlockSolidOnSide(i, j, k - 1, SOUTH)) ||
+    		   (world.isBlockSolidOnSide(i, j, k + 1, NORTH));
+    	// Forge end
     }
 
     /**
@@ -56,24 +68,26 @@ public class BlockButton extends Block {
         int var9 = var1.getData(var2, var3, var4);
         int var10 = var9 & 8;
         var9 &= 7;
-        ForgeDirection var11 = ForgeDirection.getOrientation(var5);
+        // Forge start
+        ForgeDirection dir = ForgeDirection.getOrientation(var5);
 
-        if (var11 == ForgeDirection.NORTH && var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH))
+        if (dir == NORTH && var1.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH))
         {
             var9 = 4;
         }
-        else if (var11 == ForgeDirection.SOUTH && var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH))
+        else if (dir == SOUTH && var1.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH))
         {
             var9 = 3;
         }
-        else if (var11 == ForgeDirection.WEST && var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST))
+        else if (dir == WEST && var1.isBlockSolidOnSide(var2 + 1, var3, var4, WEST))
         {
             var9 = 2;
         }
-        else if (var11 == ForgeDirection.EAST && var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST))
+        else if (dir == EAST && var1.isBlockSolidOnSide(var2 - 1, var3, var4, EAST))
         {
             var9 = 1;
         }
+        // Forge end
         else
         {
             var9 = this.l(var1, var2, var3, var4);
@@ -85,9 +99,14 @@ public class BlockButton extends Block {
     /**
      * Get side which this button is facing.
      */
-    private int l(World var1, int var2, int var3, int var4)
+    private int l(World world, int var2, int var3, int var4)
     {
-        return var1.isBlockSolidOnSide(var2 - 1, var3, var4, ForgeDirection.EAST) ? 1 : (var1.isBlockSolidOnSide(var2 + 1, var3, var4, ForgeDirection.WEST) ? 2 : (var1.isBlockSolidOnSide(var2, var3, var4 - 1, ForgeDirection.SOUTH) ? 3 : (var1.isBlockSolidOnSide(var2, var3, var4 + 1, ForgeDirection.NORTH) ? 4 : 1)));
+    	// Forge start
+        return world.isBlockSolidOnSide(var2 - 1, var3, var4, EAST) ? 1 : 
+        	  (world.isBlockSolidOnSide(var2 + 1, var3, var4, WEST) ? 2 : 
+              (world.isBlockSolidOnSide(var2, var3, var4 - 1, SOUTH) ? 3 : 
+              (world.isBlockSolidOnSide(var2, var3, var4 + 1, NORTH) ? 4 : 1)));
+        // Forge end
     }
 
 

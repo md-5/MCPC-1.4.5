@@ -24,13 +24,15 @@ public class Packet1Login extends Packet
 
     /** The maximum players. */
     public byte h;
+    // Forge start
     private boolean vanillaCompatible;
 
     public Packet1Login()
     {
         this.vanillaCompatible = FMLNetworkHandler.vanillaLoginPacketCompatibility();
     }
-
+    // Forge end
+    
     public Packet1Login(int var1, WorldType var2, EnumGamemode var3, boolean var4, int var5, int var6, int var7, int var8)
     {
         this.a = var1;
@@ -41,7 +43,7 @@ public class Packet1Login extends Packet
         this.g = (byte)var7;
         this.h = (byte)var8;
         this.c = var4;
-        this.vanillaCompatible = false;
+        this.vanillaCompatible = false; // Forge
     }
 
     /**
@@ -62,7 +64,7 @@ public class Packet1Login extends Packet
         this.c = (var3 & 8) == 8;
         int var4 = var3 & -9;
         this.d = EnumGamemode.a(var4);
-
+        // Forge start
         if (this.vanillaCompatible)
         {
             this.e = var1.readByte();
@@ -71,7 +73,7 @@ public class Packet1Login extends Packet
         {
             this.e = var1.readInt();
         }
-
+        // Forge end
         this.f = var1.readByte();
         this.g = var1.readByte();
         this.h = var1.readByte();
@@ -124,6 +126,6 @@ public class Packet1Login extends Packet
             var1 = this.b.name().length();
         }
 
-        return 6 + 2 * var1 + 4 + 4 + 1 + 1 + 1 + (this.vanillaCompatible ? 0 : 3);
+        return 6 + 2 * var1 + 4 + 4 + 1 + 1 + 1 + (this.vanillaCompatible ? 0 : 3); // Forge
     }
 }

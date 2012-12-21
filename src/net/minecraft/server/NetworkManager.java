@@ -187,7 +187,7 @@ public class NetworkManager implements INetworkManager {
 
         try {
             Packet packet = Packet.a(this.input, this.packetListener.a(), this.socket);
-
+            
             if (packet != null) {
                 if (packet instanceof Packet252KeyResponse && !this.f) {
                     if (this.packetListener.a()) {
@@ -288,11 +288,10 @@ public class NetworkManager implements INetworkManager {
 
             packet.handle(this.packetListener);
         }
-
         this.a();
         if (this.n && this.inboundQueue.isEmpty()) {
             this.packetListener.a(this.v, this.w);
-            FMLNetworkHandler.onConnectionClosed(this, this.packetListener.getPlayerH());
+            FMLNetworkHandler.onConnectionClosed(this, this.packetListener.getPlayerH()); // Forge
         }
     }
 

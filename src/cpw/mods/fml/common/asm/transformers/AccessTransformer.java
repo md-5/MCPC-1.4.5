@@ -26,8 +26,6 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
-
-import cpw.mods.fml.relauncher.IClassTransformer;
 import mcpc.com.google.common.base.Charsets;
 import mcpc.com.google.common.base.Splitter;
 import mcpc.com.google.common.collect.ArrayListMultimap;
@@ -36,6 +34,8 @@ import mcpc.com.google.common.collect.Lists;
 import mcpc.com.google.common.collect.Multimap;
 import mcpc.com.google.common.io.LineProcessor;
 import mcpc.com.google.common.io.Resources;
+
+import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class AccessTransformer implements IClassTransformer
 {

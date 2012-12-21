@@ -103,9 +103,11 @@ public class TileEntityBeacon extends TileEntity implements IInventory {
                 for (int k = this.x - i; k <= this.x + i && flag; ++k) {
                     for (int l = this.z - i; l <= this.z + i; ++l) {
                         int i1 = this.world.getTypeId(k, j, l);
-
-                        if (i1 != Block.EMERALD_BLOCK.id && i1 != Block.GOLD_BLOCK.id && i1 != Block.DIAMOND_BLOCK.id && i1 != Block.IRON_BLOCK.id) {
-                            flag = false;
+                        // Forge start
+                        Block block = Block.byId[i1];                       
+                        if (block == null || !block.isBeaconBase(world, k, j, l, this.x, this.y, this.z)) {
+                        // Forge end
+                        	flag = false;
                             break;
                         }
                     }
